@@ -12,7 +12,7 @@ module ::Calendar
       end
 
       def query_permissions?
-        user_allowed_on_query?(:view_calendar)
+        user_allowed_on_query?(:view_calendars)
       end
 
       def user_allowed_on_query?(permission)

@@ -114,7 +114,7 @@ describe ::API::V3::Views::ViewsAPI,
 
     context 'with a user allowed to save the query and see the calendar' do
       let(:additional_setup) do
-        role.update_attribute(:permissions, role.permissions + [:view_calendar])
+        role.update_attribute(:permissions, role.permissions + [:view_calendars])
       end
 
       it 'returns 201 CREATED' do
