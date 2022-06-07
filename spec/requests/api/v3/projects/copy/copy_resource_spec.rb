@@ -1,5 +1,3 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) 2012-2020 the OpenProject GmbH
@@ -43,11 +41,11 @@ describe ::API::V3::Projects::Copy::CopyAPI, content_type: :json do
 
   shared_let(:source_project) do
     create :project,
-                      enabled_module_names: %w[work_package_tracking wiki],
-                      custom_field_values: {
-                        text_custom_field.id => 'source text',
-                        list_custom_field.id => list_custom_field.custom_options.last.id
-                      }
+           enabled_module_names: %w[work_package_tracking wiki],
+           custom_field_values: {
+             text_custom_field.id => 'source text',
+             list_custom_field.id => list_custom_field.custom_options.last.id
+           }
   end
 
   shared_let(:work_package) { create :work_package, project: source_project }
@@ -55,8 +53,8 @@ describe ::API::V3::Projects::Copy::CopyAPI, content_type: :json do
 
   shared_let(:current_user) do
     create :user,
-                      member_in_project: source_project,
-                      member_with_permissions: %i[copy_projects view_project view_work_packages]
+           member_in_project: source_project,
+           member_with_permissions: %i[copy_projects view_project view_work_packages]
   end
 
   let(:path) { api_v3_paths.project_copy(source_project.id) }
@@ -93,13 +91,11 @@ describe ::API::V3::Projects::Copy::CopyAPI, content_type: :json do
         { name: 'My copied project',
           identifier: 'my-copied-project',
           "customField#{text_custom_field.id}": {
-            "raw": "CF text"
-          },
-        }
+            raw: "CF text"
+          } }
       end
 
       it 'returns with a redirect to job' do
-
         aggregate_failures do
           expect(response.status).to eq(302)
 
@@ -144,9 +140,8 @@ describe ::API::V3::Projects::Copy::CopyAPI, content_type: :json do
           identifier: 'my-copied-project',
           _meta: {
             copyWorkPackages: true,
-            copyWiki: false,
-          }
-        }
+            copyWiki: false
+          } }
       end
 
       it 'does not copy the wiki' do
@@ -168,27 +163,28 @@ describe ::API::V3::Projects::Copy::CopyAPI, content_type: :json do
         { name: 'My copied project',
           identifier: 'my-copied-project',
           _meta: {
-            sendNotifications: sendNotifications
-          }
-        }
+            sendNotifications:
+          } }
       end
 
       context 'when false' do
         let(:sendNotifications) { false }
+
         it 'queues the job without notifications' do
           expect(CopyProjectJob)
             .to have_been_enqueued.with do |args|
-            expect(args[:send_mails]).to eq false
+            expect(args[:send_mails]).to be false
           end
         end
       end
 
       context 'when true' do
         let(:sendNotifications) { true }
+
         it 'queues the job with notifications' do
           expect(CopyProjectJob)
             .to have_been_enqueued.with do |args|
-            expect(args[:send_mails]).to eq true
+            expect(args[:send_mails]).to be true
           end
         end
       end
@@ -197,8 +193,8 @@ describe ::API::V3::Projects::Copy::CopyAPI, content_type: :json do
     context 'without the necessary permission' do
       let(:current_user) do
         create :user,
-                          member_in_project: source_project,
-                          member_with_permissions: %i[view_project view_work_packages]
+               member_in_project: source_project,
+               member_with_permissions: %i[view_project view_work_packages]
       end
 
       it 'returns 403 Not Authorized' do

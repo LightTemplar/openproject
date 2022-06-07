@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,12 +37,12 @@ describe 'API v3 Query Filter resource', type: :request do
     let(:path) { api_v3_paths.query_filter(filter_name) }
     let(:filter_name) { 'assignee' }
     let(:project) { create(:project) }
-    let(:role) { create(:role, permissions: permissions) }
+    let(:role) { create(:role, permissions:) }
     let(:permissions) { [:view_work_packages] }
     let(:user) do
       create(:user,
-                        member_in_project: project,
-                        member_through_role: role)
+             member_in_project: project,
+             member_through_role: role)
     end
 
     before do
@@ -75,7 +75,7 @@ describe 'API v3 Query Filter resource', type: :request do
 
       it 'returns 404' do
         expect(last_response.status)
-          .to eql(404)
+          .to be(404)
       end
     end
 

@@ -1,5 +1,3 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) 2012-2020 the OpenProject GmbH
@@ -158,7 +156,7 @@ describe Users::RegisterUserService do
       expect(user).to receive(:register)
       expect(user).to receive(:save).and_return true
       expect(UserMailer).to receive_message_chain(:user_signed_up, :deliver_later)
-      expect(Token::Invitation).to receive(:create!).with(user: user)
+      expect(Token::Invitation).to receive(:create!).with(user:)
 
       call = instance.call
 

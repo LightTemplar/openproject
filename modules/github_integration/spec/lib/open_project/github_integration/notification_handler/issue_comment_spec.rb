@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -126,7 +126,7 @@ describe OpenProject::GithubIntegration::NotificationHandler::IssueComment do
     context 'when commented on a PR' do
       let(:comment) do
         "**Referenced in PR:** [test_user](https://github.com/test_user) referenced this work package" \
-        " in Pull request 123 [PR or issue title](https://comment.url) on [test_user/repo](https://github.com/test_user/repo).\n"
+          " in Pull request 123 [PR or issue title](https://comment.url) on [test_user/repo](https://github.com/test_user/repo).\n"
       end
 
       it_behaves_like 'creating a comment on the work package'
@@ -137,7 +137,7 @@ describe OpenProject::GithubIntegration::NotificationHandler::IssueComment do
       let(:github_pull_request) { create(:github_pull_request, github_html_url: pr_html_url) }
       let(:comment) do
         "**Referenced in PR:** [test_user](https://github.com/test_user) referenced this work package" \
-        " in Pull request 123 [PR or issue title](https://comment.url) on [test_user/repo](https://github.com/test_user/repo).\n"
+          " in Pull request 123 [PR or issue title](https://comment.url) on [test_user/repo](https://github.com/test_user/repo).\n"
       end
 
       before do
@@ -185,7 +185,7 @@ describe OpenProject::GithubIntegration::NotificationHandler::IssueComment do
     context 'when editing a PR comment with a new work package reference' do
       let(:comment) do
         "**Referenced in PR:** [test_user](https://github.com/test_user) referenced this work package" \
-        " in Pull request 123 [PR or issue title](https://comment.url) on [test_user/repo](https://github.com/test_user/repo).\n"
+          " in Pull request 123 [PR or issue title](https://comment.url) on [test_user/repo](https://github.com/test_user/repo).\n"
       end
 
       it_behaves_like 'creating a comment on the work package'
@@ -196,7 +196,7 @@ describe OpenProject::GithubIntegration::NotificationHandler::IssueComment do
       let(:github_pull_request) { create(:github_pull_request, github_html_url: pr_html_url) }
       let(:comment) do
         "**Referenced in PR:** [test_user](https://github.com/test_user) referenced this work package" \
-        " in Pull request 123 [PR or issue title](https://comment.url) on [test_user/repo](https://github.com/test_user/repo).\n"
+          " in Pull request 123 [PR or issue title](https://comment.url) on [test_user/repo](https://github.com/test_user/repo).\n"
       end
 
       before do

@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -38,7 +36,7 @@ describe Types::Scopes::Milestone, type: :model do
     subject { Type.milestone }
 
     it 'returns only milestones' do
-      is_expected
+      expect(subject)
         .to match_array [milestone]
     end
   end

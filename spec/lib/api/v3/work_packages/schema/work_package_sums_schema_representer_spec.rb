@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -33,11 +33,11 @@ describe ::API::V3::WorkPackages::Schema::WorkPackageSumsSchemaRepresenter do
 
   let(:custom_field) { build_stubbed(:integer_issue_custom_field) }
   let(:available_custom_fields) { [custom_field] }
-  let(:schema) { double('wp_schema', available_custom_fields: available_custom_fields) }
+  let(:schema) { double('wp_schema', available_custom_fields:) }
   let(:current_user) { double('user', admin?: false) }
 
   let(:representer) do
-    described_class.create(schema, current_user: current_user)
+    described_class.create(schema, current_user:)
   end
 
   subject { representer.to_json }

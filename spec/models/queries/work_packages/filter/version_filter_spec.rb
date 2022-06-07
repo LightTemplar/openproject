@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -60,7 +60,7 @@ describe Queries::WorkPackages::Filter::VersionFilter, type: :model do
             .to receive_message_chain(:shared_versions, :pluck)
             .and_return []
 
-          expect(instance).to_not be_valid
+          expect(instance).not_to be_valid
         end
       end
 
@@ -76,7 +76,7 @@ describe Queries::WorkPackages::Filter::VersionFilter, type: :model do
             .to receive_message_chain(:visible, :systemwide, :pluck)
             .and_return []
 
-          expect(instance).to_not be_valid
+          expect(instance).not_to be_valid
         end
       end
     end

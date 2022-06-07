@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -39,14 +39,14 @@ describe ColorsController, type: :controller do
     def fetch
       get 'index'
     end
-    it_should_behave_like 'a controller action with require_admin'
+    it_behaves_like 'a controller action with require_admin'
   end
 
   describe 'new.html' do
     def fetch
       get 'new'
     end
-    it_should_behave_like 'a controller action with require_admin'
+    it_behaves_like 'a controller action with require_admin'
   end
 
   describe 'create.html' do
@@ -57,7 +57,7 @@ describe ColorsController, type: :controller do
     def expect_redirect_to
       Regexp.new(colors_path)
     end
-    it_should_behave_like 'a controller action with require_admin'
+    it_behaves_like 'a controller action with require_admin'
   end
 
   describe 'edit.html' do
@@ -65,7 +65,7 @@ describe ColorsController, type: :controller do
       @available_color = create(:color, id: '1337')
       get 'edit', params: { id: '1337' }
     end
-    it_should_behave_like 'a controller action with require_admin'
+    it_behaves_like 'a controller action with require_admin'
   end
 
   describe 'update.html' do
@@ -77,7 +77,7 @@ describe ColorsController, type: :controller do
     def expect_redirect_to
       colors_path
     end
-    it_should_behave_like 'a controller action with require_admin'
+    it_behaves_like 'a controller action with require_admin'
   end
 
   describe 'confirm_destroy.html' do
@@ -85,7 +85,7 @@ describe ColorsController, type: :controller do
       @available_color = create(:color, id: '1337')
       get 'confirm_destroy', params: { id: '1337' }
     end
-    it_should_behave_like 'a controller action with require_admin'
+    it_behaves_like 'a controller action with require_admin'
   end
 
   describe 'destroy.html' do
@@ -97,6 +97,6 @@ describe ColorsController, type: :controller do
     def expect_redirect_to
       colors_path
     end
-    it_should_behave_like 'a controller action with require_admin'
+    it_behaves_like 'a controller action with require_admin'
   end
 end

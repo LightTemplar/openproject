@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,8 +37,8 @@ describe 'API v3 Priority resource' do
   let(:project) { create(:project, public: false) }
   let(:current_user) do
     create(:user,
-                      member_in_project: project,
-                      member_through_role: role)
+           member_in_project: project,
+           member_through_role: role)
   end
 
   let!(:priorities) { create_list(:priority, 2) }
@@ -83,8 +83,8 @@ describe 'API v3 Priority resource' do
       end
 
       context 'valid priority id' do
-        it 'should return HTTP 200' do
-          expect(response.status).to eql(200)
+        it 'returns HTTP 200' do
+          expect(response.status).to be(200)
         end
       end
 

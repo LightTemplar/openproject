@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -86,7 +84,7 @@ module API
           def initialize(schema, self_link:, **context)
             @base_schema_link = context.delete(:base_schema_link) || nil
             @show_lock_version = !context.delete(:hide_lock_version)
-            super(schema, self_link: self_link, **context)
+            super(schema, self_link:, **context)
           end
 
           link :baseSchema do
@@ -189,7 +187,7 @@ module API
                                    href_callback: ->(*) {
                                      work_package = represented.work_package
                                      if work_package&.new_record?
-                                       api_v3_paths.available_projects_on_create(work_package.type_id)
+                                       api_v3_paths.available_projects_on_create
                                      else
                                        api_v3_paths.available_projects_on_edit(represented.id)
                                      end
@@ -305,10 +303,8 @@ module API
           def attribute_group_map(key)
             return nil if represented.type.nil?
 
-            @attribute_group_map ||= begin
-              represented.type.attribute_groups.each_with_object({}) do |group, hash|
-                Array(group.active_members(represented.project)).each { |prop| hash[prop] = group.translated_key }
-              end
+            @attribute_group_map ||= represented.type.attribute_groups.each_with_object({}) do |group, hash|
+              Array(group.active_members(represented.project)).each { |prop| hash[prop] = group.translated_key }
             end
 
             @attribute_group_map[key]
@@ -335,7 +331,7 @@ module API
             # schemas is rendered, we can reuse that.
             RequestStore.fetch("wp_schema_query_group/#{group.key}") do
               ::JSON::parse(::API::V3::WorkPackages::Schema::FormConfigurations::QueryRepresenter
-                              .new(group, current_user: current_user, embed_links: true)
+                              .new(group, current_user:, embed_links: true)
                               .to_json)
             end
           end
@@ -350,7 +346,7 @@ module API
 
             OpenProject::Cache.fetch(OpenProject::Cache::CacheKey.expand(cache_keys.flatten.compact)) do
               ::JSON::parse(::API::V3::WorkPackages::Schema::FormConfigurations::AttributeRepresenter
-                              .new(group, current_user: current_user, project: represented.project, embed_links: true)
+                              .new(group, current_user:, project: represented.project, embed_links: true)
                               .to_json)
             end
           end

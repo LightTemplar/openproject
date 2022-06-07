@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -30,7 +30,7 @@ require 'spec_helper'
 
 describe Category, type: :model do
   let(:project) { create(:project) }
-  let(:created_category) { create(:category, project: project, assigned_to: assignee) }
+  let(:created_category) { create(:category, project:, assigned_to: assignee) }
   let(:assignee) { nil }
 
   describe '#create' do
@@ -44,8 +44,8 @@ describe Category, type: :model do
     context 'with a group assignment' do
       let(:group) do
         create(:group,
-                          member_in_project: project,
-                          member_with_permissions: [])
+               member_in_project: project,
+               member_with_permissions: [])
       end
       let(:assignee) { group }
 
@@ -57,7 +57,7 @@ describe Category, type: :model do
   end
 
   describe '#destroy' do
-    let!(:work_package) { create(:work_package, project: project, category: created_category) }
+    let!(:work_package) { create(:work_package, project:, category: created_category) }
 
     it 'nullifies existing assignments to a work package' do
       created_category.destroy
@@ -67,7 +67,7 @@ describe Category, type: :model do
     end
 
     it 'allows reassigning to a different category' do
-      other_category = create(:category, project: project)
+      other_category = create(:category, project:)
 
       created_category.destroy(other_category)
 

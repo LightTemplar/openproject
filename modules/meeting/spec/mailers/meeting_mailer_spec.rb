@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -33,20 +33,20 @@ describe MeetingMailer, type: :mailer do
   shared_let(:project) { create(:project, name: 'My project') }
   shared_let(:author) do
     create :user,
-                      member_in_project: project,
-                      member_through_role: role,
-                      preferences: { time_zone: 'Europe/Berlin' }
+           member_in_project: project,
+           member_through_role: role,
+           preferences: { time_zone: 'Europe/Berlin' }
   end
   shared_let(:watcher1) { create(:user, member_in_project: project, member_through_role: role) }
   shared_let(:watcher2) { create(:user, member_in_project: project, member_through_role: role) }
 
   let(:meeting) do
     create :meeting,
-                      author: author,
-                      project: project
+           author:,
+           project:
   end
   let(:meeting_agenda) do
-    create(:meeting_agenda, meeting: meeting)
+    create(:meeting_agenda, meeting:)
   end
 
   before do
@@ -99,9 +99,9 @@ describe MeetingMailer, type: :mailer do
     context 'when the meeting time results in another date' do
       let(:meeting) do
         create :meeting,
-                          author: author,
-                          project: project,
-                          start_time: '2021-11-09T23:00:00 +0100'.to_datetime.utc
+               author:,
+               project:,
+               start_time: '2021-11-09T23:00:00 +0100'.to_datetime.utc
       end
 
       describe 'it renders november 9th for Berlin zone' do
@@ -132,11 +132,11 @@ describe MeetingMailer, type: :mailer do
   describe 'icalendar' do
     let(:meeting) do
       create :meeting,
-                        author: author,
-                        project: project,
-                        title: 'Important meeting',
-                        start_time: "2021-01-19T10:00:00Z".to_time(:utc),
-                        duration: 1.0
+             author:,
+             project:,
+             title: 'Important meeting',
+             start_time: "2021-01-19T10:00:00Z".to_time(:utc),
+             duration: 1.0
     end
     let(:mail) { described_class.icalendar_notification meeting_agenda, 'meeting_agenda', author }
 
@@ -185,6 +185,11 @@ describe MeetingMailer, type: :mailer do
         expect(entry.summary).to eq '[My project] Important meeting'
         expect(entry.description).to eq "[My project] Agenda: Important meeting"
       end
+
+      it 'has the correct time matching the timezone' do
+        expect(entry.dtstart).to eq "2021-01-19T10:00:00Z".to_time(:utc).in_time_zone("Europe/Berlin")
+        expect(entry.dtend).to eq ("2021-01-19T10:00:00Z".to_time(:utc) + 1.hour).in_time_zone("Europe/Berlin")
+      end
     end
 
     context 'with a recipient with another time zone' do
@@ -204,9 +209,9 @@ describe MeetingMailer, type: :mailer do
     context 'when the meeting time results in another date' do
       let(:meeting) do
         create :meeting,
-                          author: author,
-                          project: project,
-                          start_time: '2021-11-09T23:00:00 +0100'.to_datetime.utc
+               author:,
+               project:,
+               start_time: '2021-11-09T23:00:00 +0100'.to_datetime.utc
       end
 
       describe 'it renders november 9th for Berlin zone' do

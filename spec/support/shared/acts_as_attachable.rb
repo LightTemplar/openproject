@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,13 +37,13 @@ shared_examples_for 'acts_as_attachable included' do
                    Array(described_class.attachable_options[:add_on_new_permission])
                  end
     create(:user,
-                      member_in_project: instance_project,
-                      member_with_permissions: permission)
+           member_in_project: instance_project,
+           member_with_permissions: permission)
   end
   let(:no_permission_user) do
     create(:user,
-                      member_in_project: instance_project,
-                      member_with_permissions: [])
+           member_in_project: instance_project,
+           member_with_permissions: [])
   end
   let(:other_user) do
     create(:user)
@@ -145,11 +145,11 @@ shared_examples_for 'acts_as_attachable included' do
 
     it 'allows access to a logged user when viewable_by_all_users is set' do
       if model_instance.class.attachable_options[:viewable_by_all_users]
-        expect(model_instance.attachments_visible?(other_user)).to eq true
-        expect(attachment1.visible?(no_permission_user)).to eq true
+        expect(model_instance.attachments_visible?(other_user)).to be true
+        expect(attachment1.visible?(no_permission_user)).to be true
       else
-        expect(model_instance.attachments_visible?(other_user)).to eq false
-        expect(attachment1.visible?(other_user)).to eq false
+        expect(model_instance.attachments_visible?(other_user)).to be false
+        expect(attachment1.visible?(other_user)).to be false
       end
     end
   end

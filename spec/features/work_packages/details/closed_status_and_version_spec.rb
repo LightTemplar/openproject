@@ -6,8 +6,8 @@ describe 'Closed status and version in full view', js: true do
 
   let(:project) { create(:project, types: [type]) }
 
-  let(:version) { create :version, status: 'closed', project: project }
-  let(:work_package) { create :work_package, project: project, status: status, version: version }
+  let(:version) { create :version, status: 'closed', project: }
+  let(:work_package) { create :work_package, project:, status:, version: }
   let(:wp_page) { ::Pages::FullWorkPackage.new(work_package, project) }
 
   let(:user) { create :admin }
@@ -23,7 +23,7 @@ describe 'Closed status and version in full view', js: true do
     status.click
 
     wp_page.expect_and_dismiss_toaster type: :error,
-                                            message: I18n.t('js.work_packages.message_work_package_status_blocked')
+                                       message: I18n.t('js.work_packages.message_work_package_status_blocked')
 
     expect(page).to have_selector('[data-qa-selector="op-wp-status-button"] button[disabled]')
   end

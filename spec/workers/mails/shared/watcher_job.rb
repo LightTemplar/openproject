@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -38,7 +36,7 @@ shared_examples "watcher job" do |action|
   let(:watcher_changer) do
     build_stubbed(:user)
   end
-  let(:work_package) { build_stubbed(:work_package, type: build_stubbed(:type), project: project) }
+  let(:work_package) { build_stubbed(:work_package, type: build_stubbed(:type), project:) }
   let(:watcher) do
     build_stubbed(:watcher, watchable: work_package, user: watching_user)
   end
@@ -50,7 +48,7 @@ shared_examples "watcher job" do |action|
   end
   let(:watching_user) do
     build_stubbed(:user,
-                             notification_settings: notification_settings).tap do |user|
+                  notification_settings:).tap do |user|
       allow(user)
         .to receive(:notification_settings)
               .and_return(notification_settings)

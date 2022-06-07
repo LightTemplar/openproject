@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -53,7 +53,7 @@ shared_examples 'BaseServices delete service' do
 
   let(:user) { build_stubbed(:user) }
   let(:instance) do
-    described_class.new(user: user, model: model_instance, contract_class: contract_class)
+    described_class.new(user:, model: model_instance, contract_class:)
   end
   let(:call_attributes) { {} }
   let!(:model_instance) { build_stubbed(factory) }

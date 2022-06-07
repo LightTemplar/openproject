@@ -40,48 +40,48 @@ describe ::API::V3::Views::ViewsAPI,
   end
   shared_let(:project) do
     create(:project,
-                      members: { permitted_user => role })
+           members: { permitted_user => role })
   end
   shared_let(:user_private_project_query) do
     create(:query,
-                      user: permitted_user,
-                      project: project,
-                      public: false)
+           user: permitted_user,
+           project:,
+           public: false)
   end
   shared_let(:user_private_project_view) do
     create(:view_work_packages_table,
-                      query: user_private_project_query)
+           query: user_private_project_query)
   end
   shared_let(:other_user_private_project_query) do
     create(:query,
-                      project: project,
-                      public: false)
+           project:,
+           public: false)
   end
   shared_let(:other_user_private_project_view) do
     create(:view_work_packages_table,
-                      query: other_user_private_project_query)
+           query: other_user_private_project_query)
   end
   shared_let(:user_public_project_query) do
     create(:query,
-                      project: project,
-                      public: true)
+           project:,
+           public: true)
   end
   shared_let(:user_public_project_view) do
     create(:view_work_packages_table,
-                      query: user_public_project_query)
+           query: user_public_project_query)
   end
   shared_let(:other_project) do
     create(:project,
-                      members: { permitted_user => role })
+           members: { permitted_user => role })
   end
   shared_let(:user_private_other_project_query) do
     create(:query,
-                      user: permitted_user,
-                      project: other_project)
+           user: permitted_user,
+           project: other_project)
   end
   shared_let(:user_private_other_project_view) do
     create(:view_work_packages_table,
-                      query: user_private_other_project_query)
+           query: user_private_other_project_query)
   end
 
   let(:views) do
@@ -94,7 +94,7 @@ describe ::API::V3::Views::ViewsAPI,
   let(:filters) { nil }
 
   let(:send_request) do
-    get api_v3_paths.path_for :views, filters: filters
+    get api_v3_paths.path_for :views, filters:
   end
 
   let(:parsed_response) { JSON.parse(last_response.body) }
@@ -144,14 +144,14 @@ describe ::API::V3::Views::ViewsAPI,
   context 'with a type filter' do
     let(:other_user_private_project_query) do
       create(:query,
-                        user: permitted_user,
-                        project: project,
-                        public: false)
+             user: permitted_user,
+             project:,
+             public: false)
     end
 
     let(:user_private_project_team_planner_view) do
       create(:view_team_planner,
-                        query: other_user_private_project_query)
+             query: other_user_private_project_query)
     end
 
     let(:views) do

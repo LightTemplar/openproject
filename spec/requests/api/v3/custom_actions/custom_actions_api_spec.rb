@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,18 +34,18 @@ describe 'API::V3::CustomActions::CustomActionsAPI', type: :request do
 
   let(:role) do
     create(:role,
-                      permissions: %i[edit_work_packages view_work_packages])
+           permissions: %i[edit_work_packages view_work_packages])
   end
   let(:project) { create(:project) }
   let(:work_package) do
     create(:work_package,
-                      project: project,
-                      assigned_to: user)
+           project:,
+           assigned_to: user)
   end
   let(:user) do
     create(:user,
-                      member_in_project: project,
-                      member_through_role: role)
+           member_in_project: project,
+           member_through_role: role)
   end
   let(:action) do
     create(:custom_action, actions: [CustomActions::Actions::AssignedTo.new(nil)])
@@ -77,7 +77,7 @@ describe 'API::V3::CustomActions::CustomActionsAPI', type: :request do
 
       it 'is a 200 OK' do
         expect(last_response.status)
-          .to eql(200)
+          .to be(200)
       end
     end
 
@@ -88,7 +88,7 @@ describe 'API::V3::CustomActions::CustomActionsAPI', type: :request do
 
       it 'is a 404 NOT FOUND' do
         expect(last_response.status)
-          .to eql(404)
+          .to be(404)
       end
     end
 
@@ -99,7 +99,7 @@ describe 'API::V3::CustomActions::CustomActionsAPI', type: :request do
 
       it 'is a 403 NOT AUTHORIZED' do
         expect(last_response.status)
-          .to eql(403)
+          .to be(403)
       end
     end
   end
@@ -118,7 +118,7 @@ describe 'API::V3::CustomActions::CustomActionsAPI', type: :request do
 
       it 'is a 200 OK' do
         expect(last_response.status)
-          .to eql(200)
+          .to be(200)
       end
 
       it 'returns the altered work package' do
@@ -183,7 +183,7 @@ describe 'API::V3::CustomActions::CustomActionsAPI', type: :request do
 
       it 'returns a 422 error' do
         expect(last_response.status)
-          .to eql 422
+          .to be 422
       end
     end
 
@@ -205,7 +205,7 @@ describe 'API::V3::CustomActions::CustomActionsAPI', type: :request do
 
       it 'returns a 422 error' do
         expect(last_response.status)
-          .to eql 422
+          .to be 422
       end
     end
   end

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,7 +34,7 @@ describe 'Work package relations tab', js: true, selenium: true do
   let(:user) { create :admin }
 
   let(:project) { create :project }
-  let(:work_package) { create(:work_package, project: project) }
+  let(:work_package) { create(:work_package, project:) }
   let(:work_packages_page) { ::Pages::SplitWorkPackage.new(work_package) }
   let(:full_wp) { ::Pages::FullWorkPackage.new(work_package) }
   let(:relations) { ::Components::WorkPackages::Relations.new(work_package) }
@@ -64,20 +64,20 @@ describe 'Work package relations tab', js: true, selenium: true do
     let(:type_1) { create :type }
     let(:type_2) { create :type }
 
-    let(:to_1) { create(:work_package, type: type_1, project: project) }
-    let(:to_2) { create(:work_package, type: type_2, project: project) }
+    let(:to_1) { create(:work_package, type: type_1, project:) }
+    let(:to_2) { create(:work_package, type: type_2, project:) }
 
     let!(:relation_1) do
       create :relation,
-                        from: work_package,
-                        to: to_1,
-                        relation_type: Relation::TYPE_FOLLOWS
+             from: work_package,
+             to: to_1,
+             relation_type: Relation::TYPE_FOLLOWS
     end
     let!(:relation_2) do
       create :relation,
-                        from: work_package,
-                        to: to_2,
-                        relation_type: Relation::TYPE_RELATES
+             from: work_package,
+             to: to_2,
+             relation_type: Relation::TYPE_RELATES
     end
 
     let(:toggle_btn_selector) { '#wp-relation-group-by-toggle' }
@@ -149,17 +149,17 @@ describe 'Work package relations tab', js: true, selenium: true do
   describe 'with limited permissions' do
     let(:permissions) { %i(view_work_packages) }
     let(:user_role) do
-      create :role, permissions: permissions
+      create :role, permissions:
     end
 
     let(:user) do
       create :user,
-                        member_in_project: project,
-                        member_through_role: user_role
+             member_in_project: project,
+             member_through_role: user_role
     end
 
     context 'as view-only user, with parent set' do
-      let(:work_package) { create(:work_package, project: project) }
+      let(:work_package) { create(:work_package, project:) }
 
       it 'shows no links to create relations' do
         # No create buttons should exist
@@ -175,8 +175,9 @@ describe 'Work package relations tab', js: true, selenium: true do
         %i(view_work_packages add_work_packages manage_subtasks manage_work_package_relations)
       end
 
-      let!(:relatable) { create(:work_package, project: project) }
-      it 'should allow to manage relations' do
+      let!(:relatable) { create(:work_package, project:) }
+
+      it 'allows to manage relations' do
         relations.add_relation(type: 'follows', to: relatable)
 
         # Relations counter badge should increase number of relations
@@ -189,10 +190,10 @@ describe 'Work package relations tab', js: true, selenium: true do
         tabs.expect_no_counter(relations_tab)
 
         work_package.reload
-        expect(work_package.relations.direct).to be_empty
+        expect(work_package.relations).to be_empty
       end
 
-      it 'should allow to move between split and full view (Regression #24194)' do
+      it 'allows to move between split and full view (Regression #24194)' do
         relations.add_relation(type: 'follows', to: relatable)
         # Relations counter should increase
         tabs.expect_counter(relations_tab, 1)
@@ -214,7 +215,7 @@ describe 'Work package relations tab', js: true, selenium: true do
         expect(page).to have_no_selector('.wp-relations--subject-field', text: relatable.subject)
       end
 
-      it 'should follow the relation links (Regression #26794)' do
+      it 'follows the relation links (Regression #26794)' do
         relations.add_relation(type: 'follows', to: relatable)
 
         relations.click_relation(relatable)
@@ -226,7 +227,7 @@ describe 'Work package relations tab', js: true, selenium: true do
         subject.expect_state_text work_package.subject
       end
 
-      it 'should allow to change relation descriptions' do
+      it 'allows to change relation descriptions' do
         relations.add_relation(type: 'follows', to: relatable)
 
         ## Toggle description
@@ -268,8 +269,7 @@ describe 'Work package relations tab', js: true, selenium: true do
         created_row.find('.wp-relation--description-read-value',
                          text: 'my description!').click
 
-        relation = work_package.relations.direct.first
-        relation.reload
+        relation = work_package.relations.first
         expect(relation.description).to eq('my description!')
 
         # Toggle to close

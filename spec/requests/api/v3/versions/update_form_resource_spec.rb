@@ -1,5 +1,3 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) 2012-2020 the OpenProject GmbH
@@ -34,12 +32,12 @@ describe ::API::V3::Versions::UpdateFormAPI, content_type: :json do
   include Rack::Test::Methods
   include API::V3::Utilities::PathHelper
 
-  let(:version) { create(:version, project: project) }
+  let(:version) { create(:version, project:) }
   let(:project) { create(:project) }
   let(:user) do
     create(:user,
-                      member_in_project: project,
-                      member_with_permissions: permissions)
+           member_in_project: project,
+           member_with_permissions: permissions)
   end
   let(:permissions) { [:manage_versions] }
 
@@ -105,10 +103,10 @@ describe ::API::V3::Versions::UpdateFormAPI, content_type: :json do
 
     context 'with wanting to alter the project' do
       let(:other_project) do
-        role = create(:role, permissions: permissions)
+        role = create(:role, permissions:)
 
         create(:project,
-                          members: { user => role })
+               members: { user => role })
       end
       let(:parameters) do
         {
@@ -150,10 +148,10 @@ describe ::API::V3::Versions::UpdateFormAPI, content_type: :json do
             raw: 'A new description'
           },
           "customField#{int_cf.id}": 5,
-          "startDate": "2018-01-01",
-          "endDate": "2018-01-09",
-          "status": "closed",
-          "sharing": "descendants",
+          startDate: "2018-01-01",
+          endDate: "2018-01-09",
+          status: "closed",
+          sharing: "descendants",
           _links: {
             "customField#{list_cf.id}": {
               href: api_v3_paths.custom_option(list_cf.custom_options.first.id)

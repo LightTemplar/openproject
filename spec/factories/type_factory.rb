@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -71,7 +71,7 @@ FactoryBot.define do
 
     # reuse existing type with the given name
     # this prevents a validation error (name has to be unique)
-    initialize_with { ::Type.find_or_initialize_by(name: name) }
+    initialize_with { ::Type.find_or_initialize_by(name:) }
 
     factory :type_feature do
       name { 'Feature' }

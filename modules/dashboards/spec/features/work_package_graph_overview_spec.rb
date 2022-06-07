@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -41,21 +41,21 @@ describe 'Work package overview graph widget on dashboard',
   let!(:closed_status) { create :closed_status }
   let!(:open_work_package) do
     create :work_package,
-                      subject: 'Spanning work package',
-                      project: project,
-                      status: open_status,
-                      type: type,
-                      author: user,
-                      responsible: user
+           subject: 'Spanning work package',
+           project:,
+           status: open_status,
+           type:,
+           author: user,
+           responsible: user
   end
   let!(:closed) do
     create :work_package,
-                      subject: 'Starting work package',
-                      project: project,
-                      status: closed_status,
-                      type: type,
-                      author: user,
-                      responsible: user
+           subject: 'Starting work package',
+           project:,
+           status: closed_status,
+           type:,
+           author: user,
+           responsible: user
   end
 
   let(:permissions) do
@@ -65,12 +65,12 @@ describe 'Work package overview graph widget on dashboard',
   end
 
   let(:role) do
-    create(:role, permissions: permissions)
+    create(:role, permissions:)
   end
 
   let(:user) do
     create(:user).tap do |u|
-      create(:member, project: project, user: u, roles: [role])
+      create(:member, project:, user: u, roles: [role])
     end
   end
 

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -30,12 +30,12 @@ require 'spec_helper'
 
 describe 'Work package attribute help texts', type: :feature, js: true do
   let(:project) { create :project }
-  let(:work_package) { create :work_package, project: project }
+  let(:work_package) { create :work_package, project: }
 
   let(:instance) do
     create :work_package_help_text,
-                      attribute_name: :status,
-                      help_text: 'Some **help text** for status.'
+           attribute_name: :status,
+           help_text: 'Some **help text** for status.'
   end
 
   let(:modal) { Components::AttributeHelpTextModal.new(instance) }
@@ -65,6 +65,7 @@ describe 'Work package attribute help texts', type: :feature, js: true do
 
   describe 'as admin' do
     let(:user) { create(:admin) }
+
     it_behaves_like 'allows to view help texts'
   end
 
@@ -74,8 +75,8 @@ describe 'Work package attribute help texts', type: :feature, js: true do
     end
     let(:user) do
       create :user,
-                        member_in_project: project,
-                        member_through_role: view_wps_role
+             member_in_project: project,
+             member_through_role: view_wps_role
     end
 
     it_behaves_like 'allows to view help texts'

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -36,7 +36,7 @@ describe 'Enterprise Edition token domain', type: :feature, js: true do
     allow(User).to receive(:current).and_return current_user
   end
 
-  shared_examples 'uploading a token' do
+  shared_context 'uploading a token' do
     before do
       visit '/admin/enterprise'
 
@@ -75,7 +75,7 @@ describe 'Enterprise Edition token domain', type: :feature, js: true do
       visit '/admin/enterprise'
     end
 
-    shared_examples 'replacing a token' do
+    shared_context 'replacing a token' do
       let(:new_token) { raise 'define me!' }
 
       before do

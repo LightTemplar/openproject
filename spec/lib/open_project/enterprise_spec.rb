@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -30,20 +30,20 @@ require 'spec_helper'
 require 'open_project/passwords'
 
 describe OpenProject::Enterprise do
-    # create 3 built-in users, only 2 of which are active
-    # Also create a placeholder user which will not count against the limit
-    let!(:system_user) { User.system }
-    let!(:anonymous_user) { User.anonymous }
-    let!(:deleted_user) { DeletedUser.first } # locked, not active
-    let!(:placeholder_user) { create(:placeholder_user) }
+  # create 3 built-in users, only 2 of which are active
+  # Also create a placeholder user which will not count against the limit
+  let!(:system_user) { User.system }
+  let!(:anonymous_user) { User.anonymous }
+  let!(:deleted_user) { DeletedUser.first } # locked, not active
+  let!(:placeholder_user) { create(:placeholder_user) }
 
   let(:user_limit) { 2 }
 
-    before do
-      allow(OpenProject::Enterprise)
-        .to receive(:user_limit)
-        .and_return(user_limit)
-    end
+  before do
+    allow(OpenProject::Enterprise)
+      .to receive(:user_limit)
+      .and_return(user_limit)
+  end
 
   describe "#user_limit_reached?" do
     context "with fewer active users than the limit allows" do

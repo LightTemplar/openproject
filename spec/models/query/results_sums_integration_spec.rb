@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -35,6 +35,14 @@ describe ::Query::Results, 'sums', type: :model do
       p.work_package_custom_fields << float_cf
     end
   end
+  let(:estimated_hours_column) { query.available_columns.detect { |c| c.name.to_s == 'estimated_hours' } }
+  let(:int_cf_column) { query.available_columns.detect { |c| c.name.to_s == "cf_#{int_cf.id}" } }
+  let(:float_cf_column) { query.available_columns.detect { |c| c.name.to_s == "cf_#{float_cf.id}" } }
+  let(:material_costs_column) { query.available_columns.detect { |c| c.name.to_s == "material_costs" } }
+  let(:labor_costs_column) { query.available_columns.detect { |c| c.name.to_s == "labor_costs" } }
+  let(:overall_costs_column) { query.available_columns.detect { |c| c.name.to_s == "overall_costs" } }
+  let(:remaining_hours_column) { query.available_columns.detect { |c| c.name.to_s == "remaining_hours" } }
+  let(:story_points_column) { query.available_columns.detect { |c| c.name.to_s == "story_points" } }
   let(:other_project) do
     create(:project).tap do |p|
       p.work_package_custom_fields << int_cf
@@ -43,77 +51,77 @@ describe ::Query::Results, 'sums', type: :model do
   end
   let!(:work_package1) do
     create(:work_package,
-                      type: type,
-                      project: project,
-                      estimated_hours: 5,
-                      done_ratio: 10,
-                      "custom_field_#{int_cf.id}" => 10,
-                      "custom_field_#{float_cf.id}" => 3.414,
-                      remaining_hours: 3,
-                      story_points: 7)
+           type:,
+           project:,
+           estimated_hours: 5,
+           done_ratio: 10,
+           "custom_field_#{int_cf.id}" => 10,
+           "custom_field_#{float_cf.id}" => 3.414,
+           remaining_hours: 3,
+           story_points: 7)
   end
   let!(:work_package2) do
     create(:work_package,
-                      type: type,
-                      project: project,
-                      assigned_to: current_user,
-                      done_ratio: 50,
-                      estimated_hours: 5,
-                      "custom_field_#{int_cf.id}" => 10,
-                      "custom_field_#{float_cf.id}" => 3.414,
-                      remaining_hours: 3,
-                      story_points: 7)
+           type:,
+           project:,
+           assigned_to: current_user,
+           done_ratio: 50,
+           estimated_hours: 5,
+           "custom_field_#{int_cf.id}" => 10,
+           "custom_field_#{float_cf.id}" => 3.414,
+           remaining_hours: 3,
+           story_points: 7)
   end
   let!(:work_package3) do
     create(:work_package,
-                      type: type,
-                      project: project,
-                      assigned_to: current_user,
-                      responsible: current_user,
-                      done_ratio: 50,
-                      estimated_hours: 5,
-                      "custom_field_#{int_cf.id}" => 10,
-                      "custom_field_#{float_cf.id}" => 3.414,
-                      remaining_hours: 3,
-                      story_points: 7)
+           type:,
+           project:,
+           assigned_to: current_user,
+           responsible: current_user,
+           done_ratio: 50,
+           estimated_hours: 5,
+           "custom_field_#{int_cf.id}" => 10,
+           "custom_field_#{float_cf.id}" => 3.414,
+           remaining_hours: 3,
+           story_points: 7)
   end
   let!(:invisible_work_package1) do
     create(:work_package,
-                      type: type,
-                      project: other_project,
-                      estimated_hours: 5,
-                      "custom_field_#{int_cf.id}" => 10,
-                      "custom_field_#{float_cf.id}" => 3.414,
-                      remaining_hours: 3,
-                      story_points: 7)
+           type:,
+           project: other_project,
+           estimated_hours: 5,
+           "custom_field_#{int_cf.id}" => 10,
+           "custom_field_#{float_cf.id}" => 3.414,
+           remaining_hours: 3,
+           story_points: 7)
   end
   let!(:cost_entry1) do
     create(:cost_entry,
-                      project: project,
-                      work_package: work_package1,
-                      user: current_user,
-                      overridden_costs: 200)
+           project:,
+           work_package: work_package1,
+           user: current_user,
+           overridden_costs: 200)
   end
   let!(:cost_entry2) do
     create(:cost_entry,
-                      project: project,
-                      work_package: work_package2,
-                      user: current_user,
-                      overridden_costs: 200)
+           project:,
+           work_package: work_package2,
+           user: current_user,
+           overridden_costs: 200)
   end
   let!(:time_entry1) do
     create(:time_entry,
-                      project: project,
-                      work_package: work_package1,
-                      user: current_user,
-                      overridden_costs: 300)
+           project:,
+           work_package: work_package1,
+           user: current_user,
+           overridden_costs: 300)
   end
   let!(:time_entry2) do
     create(:time_entry,
-                      project: project,
-                      work_package: work_package2,
-                      user: current_user,
-                      overridden_costs: 300)
+           project:,
+           work_package: work_package2,
+           user: current_user,
+           overridden_costs: 300)
   end
   let(:int_cf) do
     create(:int_wp_custom_field)
@@ -129,8 +137,8 @@ describe ::Query::Results, 'sums', type: :model do
   end
   let(:current_user) do
     create(:user,
-                      member_in_project: project,
-                      member_with_permissions: permissions)
+           member_in_project: project,
+           member_with_permissions: permissions)
   end
   let(:permissions) do
     %i[view_work_packages view_cost_entries view_time_entries view_cost_rates view_hourly_rates]
@@ -138,8 +146,8 @@ describe ::Query::Results, 'sums', type: :model do
   let(:group_by) { nil }
   let(:query) do
     build :query,
-                     project: project,
-                     group_by: group_by
+          project:,
+          group_by:
   end
   let(:query_results) do
     ::Query::Results.new query
@@ -148,14 +156,6 @@ describe ::Query::Results, 'sums', type: :model do
   before do
     login_as(current_user)
   end
-  let(:estimated_hours_column) { query.available_columns.detect { |c| c.name.to_s == 'estimated_hours' } }
-  let(:int_cf_column) { query.available_columns.detect { |c| c.name.to_s == "cf_#{int_cf.id}" } }
-  let(:float_cf_column) { query.available_columns.detect { |c| c.name.to_s == "cf_#{float_cf.id}" } }
-  let(:material_costs_column) { query.available_columns.detect { |c| c.name.to_s == "material_costs" } }
-  let(:labor_costs_column) { query.available_columns.detect { |c| c.name.to_s == "labor_costs" } }
-  let(:overall_costs_column) { query.available_columns.detect { |c| c.name.to_s == "overall_costs" } }
-  let(:remaining_hours_column) { query.available_columns.detect { |c| c.name.to_s == "remaining_hours" } }
-  let(:story_points_column) { query.available_columns.detect { |c| c.name.to_s == "story_points" } }
 
   describe '#all_total_sums' do
     it 'is a hash of all summable columns' do

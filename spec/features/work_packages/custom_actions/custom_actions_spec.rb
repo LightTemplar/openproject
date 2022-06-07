@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -31,40 +31,40 @@ require 'spec_helper'
 describe 'Custom actions', type: :feature, js: true do
   shared_let(:admin) { create :admin }
 
-  let(:permissions) { %i(view_work_packages edit_work_packages move_work_packages) }
-  let(:role) { create(:role, permissions: permissions) }
-  let!(:other_role) { create(:role, permissions: permissions) }
+  let(:permissions) { %i(view_work_packages edit_work_packages move_work_packages work_package_assigned) }
+  let(:role) { create(:role, permissions:) }
+  let!(:other_role) { create(:role, permissions:) }
   let(:user) do
     user = create(:user,
-                             firstname: 'A',
-                             lastname: 'User')
+                  firstname: 'A',
+                  lastname: 'User')
 
     create(:member,
-                      project: project,
-                      roles: [role],
-                      user: user)
+           project:,
+           roles: [role],
+           user:)
 
     create(:member,
-                      project: other_project,
-                      roles: [role],
-                      user: user)
+           project: other_project,
+           roles: [role],
+           user:)
     user
   end
   let!(:other_member_user) do
     create(:user,
-                      firstname: 'Other member',
-                      lastname: 'User',
-                      member_in_project: project,
-                      member_through_role: role)
+           firstname: 'Other member',
+           lastname: 'User',
+           member_in_project: project,
+           member_through_role: role)
   end
   let(:project) { create(:project, name: 'This project') }
   let(:other_project) { create(:project, name: 'Other project') }
   let!(:work_package) do
     create(:work_package,
-                      project: project,
-                      assigned_to: user,
-                      priority: default_priority,
-                      status: default_status)
+           project:,
+           assigned_to: user,
+           priority: default_priority,
+           status: default_status)
   end
 
   let(:wp_page) { Pages::FullWorkPackage.new(work_package) }
@@ -73,8 +73,8 @@ describe 'Custom actions', type: :feature, js: true do
   end
   let!(:immediate_priority) do
     create(:issue_priority,
-                      name: 'At once',
-                      position: IssuePriority.maximum(:position) + 1)
+           name: 'At once',
+           position: IssuePriority.maximum(:position) + 1)
   end
   let(:default_status) do
     create(:default_status, name: 'Default status')
@@ -94,26 +94,26 @@ describe 'Custom actions', type: :feature, js: true do
   end
   let!(:workflows) do
     create(:workflow,
-                      old_status: default_status,
-                      new_status: closed_status,
-                      role: role,
-                      type: work_package.type)
+           old_status: default_status,
+           new_status: closed_status,
+           role:,
+           type: work_package.type)
 
     create(:workflow,
-                      new_status: default_status,
-                      old_status: closed_status,
-                      role: role,
-                      type: work_package.type)
+           new_status: default_status,
+           old_status: closed_status,
+           role:,
+           type: work_package.type)
     create(:workflow,
-                      old_status: default_status,
-                      new_status: rejected_status,
-                      role: role,
-                      type: work_package.type)
+           old_status: default_status,
+           new_status: rejected_status,
+           role:,
+           type: work_package.type)
     create(:workflow,
-                      old_status: rejected_status,
-                      new_status: default_status,
-                      role: role,
-                      type: other_type)
+           old_status: rejected_status,
+           new_status: default_status,
+           role:,
+           type: other_type)
   end
   let!(:list_custom_field) do
     cf = create(:list_wp_custom_field, multi_value: true)
@@ -144,7 +144,7 @@ describe 'Custom actions', type: :feature, js: true do
     login_as(admin)
   end
 
-  scenario 'viewing workflow buttons' do
+  it 'viewing workflow buttons' do
     # create custom action 'Unassign'
     index_ca_page.visit!
 
@@ -452,7 +452,7 @@ describe 'Custom actions', type: :feature, js: true do
     wp_page.expect_toast type: :error, message: I18n.t('api_v3.errors.code_409')
   end
 
-  scenario 'editing a current date custom action (Regression #30949)' do
+  it 'editing a current date custom action (Regression #30949)' do
     # create custom action 'Unassign'
     index_ca_page.visit!
 

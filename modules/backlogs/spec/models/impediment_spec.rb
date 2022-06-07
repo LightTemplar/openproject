@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,41 +37,41 @@ describe Impediment, type: :model do
   let(:status) { create(:status) }
   let(:task) do
     build(:task, type: type_task,
-                            project: project,
-                            author: user,
-                            priority: issue_priority,
-                            status: status)
+                 project:,
+                 author: user,
+                 priority: issue_priority,
+                 status:)
   end
   let(:feature) do
     build(:work_package, type: type_feature,
-                                    project: project,
-                                    author: user,
-                                    priority: issue_priority,
-                                    status: status)
+                         project:,
+                         author: user,
+                         priority: issue_priority,
+                         status:)
   end
-  let(:version) { create(:version, project: project) }
+  let(:version) { create(:version, project:) }
 
   let(:project) do
     unless @project
       @project = build(:project, types: [type_feature, type_task])
       @project.members = [build(:member, principal: user,
-                                                    project: @project,
-                                                    roles: [role])]
+                                         project: @project,
+                                         roles: [role])]
     end
     @project
   end
 
   let(:impediment) do
     build(:impediment, author: user,
-                                  version: version,
-                                  assigned_to: user,
-                                  priority: issue_priority,
-                                  project: project,
-                                  type: type_task,
-                                  status: status)
+                       version:,
+                       assigned_to: user,
+                       priority: issue_priority,
+                       project:,
+                       type: type_task,
+                       status:)
   end
 
-  before(:each) do
+  before do
     allow(Setting)
       .to receive(:plugin_openproject_backlogs)
       .and_return({ 'points_burn_direction' => 'down',
@@ -106,18 +106,18 @@ describe Impediment, type: :model do
         end
       end
 
-      describe 'WITH only prior blockers defined' do
-        before(:each) do
+      describe 'WITH loading from the backend' do
+        before do
           feature.version = version
           feature.save
           task.version = version
           task.save
 
-          # Using the default association method block_ids (without s) here
-          impediment.block_ids = [feature.id, task.id]
+          impediment.blocks_ids = [feature.id, task.id]
+          impediment.save
         end
 
-        it { expect(impediment.blocks_ids).to eql [feature.id, task.id] }
+        it { expect(described_class.find(impediment.id).blocks_ids).to eql [feature.id, task.id] }
       end
     end
   end

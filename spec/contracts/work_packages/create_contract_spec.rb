@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,16 +35,16 @@ describe WorkPackages::CreateContract do
       wp.extend(OpenProject::ChangedBySystem)
     end
   end
-  let(:work_package_project) { project }
-  let(:project) { build_stubbed(:project) }
-  let(:user) { build_stubbed(:user) }
-
-  subject(:contract) { described_class.new(work_package, user) }
   let(:validated_contract) do
     contract = subject
     contract.validate
     contract
   end
+  let(:work_package_project) { project }
+  let(:project) { build_stubbed(:project) }
+  let(:user) { build_stubbed(:user) }
+
+  subject(:contract) { described_class.new(work_package, user) }
 
   it_behaves_like 'work package contract'
 

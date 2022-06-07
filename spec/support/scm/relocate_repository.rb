@@ -5,8 +5,8 @@ shared_examples_for 'repository can be relocated' do |vendor|
   let(:project) { build :project }
   let(:repository) do
     repo = build("repository_#{vendor}".to_sym,
-                            project: project,
-                            scm_type: :managed)
+                 project:,
+                 scm_type: :managed)
 
     repo.configure(:managed, nil)
     repo.save!
@@ -52,8 +52,8 @@ shared_examples_for 'repository can be relocated' do |vendor|
         .to_return(status: 200,
                    body: { success: true, url: 'file:///foo/bar', path: '/tmp/foo/bar' }.to_json)
       create("repository_#{vendor}".to_sym,
-                        project: project,
-                        scm_type: :managed)
+             project:,
+             scm_type: :managed)
     end
 
     before do
@@ -72,7 +72,7 @@ shared_examples_for 'repository can be relocated' do |vendor|
 
       expect(WebMock)
         .to have_requested(:post, url)
-        .with(body: hash_including(old_identifier: old_identifier,
+        .with(body: hash_including(old_identifier:,
                                    action: 'relocate'))
     end
   end

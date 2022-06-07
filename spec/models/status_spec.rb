@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -42,7 +42,7 @@ describe Status, type: :model do
 
       it 'can not be set read only (Regression #33750)', with_ee: %i[readonly_work_packages] do
         status.is_readonly = true
-        expect(status.save).to eq false
+        expect(status.save).to be false
         expect(status.errors[:is_readonly]).to include(I18n.t("activerecord.errors.models.status.readonly_default_exlusive"))
       end
 
@@ -99,7 +99,7 @@ describe Status, type: :model do
 
   describe '.update_done_ratios' do
     let(:status) { create(:status, default_done_ratio: 50) }
-    let(:work_package) { create(:work_package, status: status) }
+    let(:work_package) { create(:work_package, status:) }
 
     context 'with Setting.work_package_done_ratio using the field', with_settings: { work_package_done_ratio: 'field' } do
       it 'changes nothing' do

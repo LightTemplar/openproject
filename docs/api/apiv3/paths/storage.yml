@@ -6,7 +6,8 @@ get:
   tags:
     - File links
   description: |-
-    Gets a storage resource.
+    Gets a storage resource. As a side effect, a live connection to the storages origin is established to retrieve
+    connection state data.
   parameters:
     - name: id
       description: Storage id
@@ -21,12 +22,12 @@ get:
       content:
         application/hal+json:
           schema:
-            $ref: '#/components/schemas/StorageModel'
+            $ref: '../components/schemas/storage_model.yml'
     '404':
       content:
         application/hal+json:
           schema:
-            $ref: "#/components/schemas/ErrorResponse"
+            $ref: "../components/schemas/error_response.yml"
           example:
             _type: Error
             errorIdentifier: urn:openproject-org:api:v3:errors:NotFound

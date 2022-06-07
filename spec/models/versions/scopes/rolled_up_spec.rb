@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -36,7 +34,7 @@ describe Versions::Scopes::RolledUp, type: :model do
   shared_let(:sibling_project) { create(:project, parent: parent_project) }
   shared_let(:child_project) { create(:project, parent: project) }
   shared_let(:grand_child_project) { create(:project, parent: child_project) }
-  shared_let(:version) { create(:version, project: project) }
+  shared_let(:version) { create(:version, project:) }
   shared_let(:child_version) { create(:version, project: child_project) }
   shared_let(:grand_child_version) { create(:version, project: grand_child_project) }
   shared_let(:parent_version) { create(:version, project: parent_project) }

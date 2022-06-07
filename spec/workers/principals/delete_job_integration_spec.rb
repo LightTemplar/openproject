@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -41,12 +41,13 @@ describe Principals::DeleteJob, type: :model do
   end
   let(:member) do
     create(:member,
-                      principal: principal,
-                      project: project,
-                      roles: [role])
+           principal:,
+           project:,
+           roles: [role])
   end
+
   shared_let(:role) do
-    create(:role, permissions: %i[view_work_packages] )
+    create(:role, permissions: %i[view_work_packages])
   end
 
   describe '#perform' do
@@ -56,8 +57,8 @@ describe Principals::DeleteJob, type: :model do
     shared_examples_for 'work_package handling' do
       let(:work_package) do
         create(:work_package,
-                          assigned_to: principal,
-                          responsible: principal)
+               assigned_to: principal,
+               responsible: principal)
       end
 
       before do
@@ -103,19 +104,19 @@ describe Principals::DeleteJob, type: :model do
       let(:work_package) { create(:work_package) }
       let(:entry) do
         create(:cost_entry,
-                          user: principal,
-                          project: work_package.project,
-                          units: 100.0,
-                          spent_on: Date.today,
-                          work_package: work_package,
-                          comments: '')
+               user: principal,
+               project: work_package.project,
+               units: 100.0,
+               spent_on: Date.today,
+               work_package:,
+               comments: '')
       end
 
       before do
         create(:member,
-                          project: work_package.project,
-                          user: principal,
-                          roles: [build(:role)])
+               project: work_package.project,
+               user: principal,
+               roles: [build(:role)])
         entry
 
         job
@@ -149,8 +150,8 @@ describe Principals::DeleteJob, type: :model do
     shared_examples_for 'hourly_rate handling' do
       let(:hourly_rate) do
         build(:hourly_rate,
-                         user: principal,
-                         project: project)
+              user: principal,
+              project:)
       end
 
       before do
@@ -163,7 +164,7 @@ describe Principals::DeleteJob, type: :model do
     end
 
     shared_examples_for 'watcher handling' do
-      let(:watched) { create(:news, project: project) }
+      let(:watched) { create(:news, project:) }
       let(:watch) do
         Watcher.create(user: principal,
                        watchable: watched)
@@ -222,8 +223,8 @@ describe Principals::DeleteJob, type: :model do
     shared_examples_for 'issue category handling' do
       let(:category) do
         create(:category,
-                          assigned_to: principal,
-                          project: project)
+               assigned_to: principal,
+               project:)
       end
 
       before do
@@ -256,7 +257,7 @@ describe Principals::DeleteJob, type: :model do
       it 'removes the query' do
         job
 
-        expect(CostQuery.find_by_id(query.id)).to eq(nil)
+        expect(CostQuery.find_by_id(query.id)).to be_nil
       end
     end
 
@@ -343,25 +344,25 @@ describe Principals::DeleteJob, type: :model do
       describe "with the query has a user_id filter" do
         let(:filter) { CostQuery::Filter::UserId }
 
-        it_should_behave_like "public query rewriting"
+        it_behaves_like "public query rewriting"
       end
 
       describe "with the query has a author_id filter" do
         let(:filter) { CostQuery::Filter::AuthorId }
 
-        it_should_behave_like "public query rewriting"
+        it_behaves_like "public query rewriting"
       end
 
       describe "with the query has a assigned_to_id filter" do
         let(:filter) { CostQuery::Filter::AssignedToId }
 
-        it_should_behave_like "public query rewriting"
+        it_behaves_like "public query rewriting"
       end
 
       describe "with the query has an responsible_id filter" do
         let(:filter) { CostQuery::Filter::ResponsibleId }
 
-        it_should_behave_like "public query rewriting"
+        it_behaves_like "public query rewriting"
       end
     end
 
@@ -395,9 +396,9 @@ describe Principals::DeleteJob, type: :model do
           create(:user)
         end
         let(:group_members) { [user] }
-        let(:watched) { create(:news, project: project) }
+        let(:watched) { create(:news, project:) }
         let(:watch) do
-          Watcher.create(user: user,
+          Watcher.create(user:,
                          watchable: watched)
         end
 

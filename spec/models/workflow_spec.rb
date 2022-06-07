@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -59,35 +59,38 @@ describe Workflow, type: :model do
     describe 'workflow w/o author or assignee' do
       let!(:workflow_src) do
         create(:workflow,
-                          old_status: status_0,
-                          new_status: status_1,
-                          type_id: type.id,
-                          role: role)
+               old_status: status_0,
+               new_status: status_1,
+               type_id: type.id,
+               role:)
       end
+
       it_behaves_like 'copied workflow'
     end
 
     describe 'workflow with author' do
       let!(:workflow_src) do
         create(:workflow,
-                          old_status: status_0,
-                          new_status: status_1,
-                          type_id: type.id,
-                          role: role,
-                          author: true)
+               old_status: status_0,
+               new_status: status_1,
+               type_id: type.id,
+               role:,
+               author: true)
       end
+
       it_behaves_like 'copied workflow'
     end
 
     describe 'workflow with assignee' do
       let!(:workflow_src) do
         create(:workflow,
-                          old_status: status_0,
-                          new_status: status_1,
-                          type_id: type.id,
-                          role: role,
-                          assignee: true)
+               old_status: status_0,
+               new_status: status_1,
+               type_id: type.id,
+               role:,
+               assignee: true)
       end
+
       it_behaves_like 'copied workflow'
     end
   end

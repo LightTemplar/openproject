@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,9 +37,9 @@ describe 'API v3 Work package resource' do
   let(:project) { create(:project) }
   let(:work_package) do
     create(:work_package,
-                      project: project,
-                      story_points: 8,
-                      remaining_hours: 5)
+           project:,
+           story_points: 8,
+           remaining_hours: 5)
   end
   let(:wp_path) { "/api/v3/work_packages/#{work_package.id}" }
 
@@ -72,7 +72,7 @@ describe 'API v3 Work package resource' do
 
       include_context 'query work package'
 
-      it { expect(last_response.status).to eql 200 }
+      it { expect(last_response.status).to be 200 }
 
       it { is_expected.not_to have_json_path('storyPoints') }
 

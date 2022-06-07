@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -32,15 +32,15 @@ describe Queries::WorkPackages::Filter::CustomFieldFilter,
          'with contains filter (Regression test #28348)',
          type: :model do
   let(:cf_accessor) { "cf_#{custom_field.id}" }
-  let(:query) { build_stubbed(:query, project: project) }
+  let(:query) { build_stubbed(:query, project:) }
   let(:instance) do
-    described_class.create!(name: cf_accessor, operator: operator, values: %w(foo), context: query)
+    described_class.create!(name: cf_accessor, operator:, values: %w(foo), context: query)
   end
 
   let(:project) do
     create :project,
-                      types: [type],
-                      work_package_custom_fields: [custom_field]
+           types: [type],
+           work_package_custom_fields: [custom_field]
   end
   let(:custom_field) do
     create(:text_issue_custom_field, name: 'LongText')
@@ -49,29 +49,29 @@ describe Queries::WorkPackages::Filter::CustomFieldFilter,
 
   let!(:wp_contains) do
     create :work_package,
-                      type: type,
-                      project: project,
-                      custom_values: { custom_field.id => 'foo' }
+           type:,
+           project:,
+           custom_values: { custom_field.id => 'foo' }
   end
   let!(:wp_not_contains) do
     create :work_package,
-                      type: type,
-                      project: project,
-                      custom_values: { custom_field.id => 'bar' }
+           type:,
+           project:,
+           custom_values: { custom_field.id => 'bar' }
   end
 
   let!(:wp_empty) do
     create :work_package,
-                      type: type,
-                      project: project,
-                      custom_values: { custom_field.id => '' }
+           type:,
+           project:,
+           custom_values: { custom_field.id => '' }
   end
 
   let!(:wp_nil) do
     create :work_package,
-                      type: type,
-                      project: project,
-                      custom_values: { custom_field.id => nil }
+           type:,
+           project:,
+           custom_values: { custom_field.id => nil }
   end
 
   subject { WorkPackage.where(instance.where) }
@@ -80,7 +80,7 @@ describe Queries::WorkPackages::Filter::CustomFieldFilter,
     let(:operator) { '~' }
 
     it 'returns the one matching work package' do
-      is_expected
+      expect(subject)
         .to match_array [wp_contains]
     end
   end
@@ -89,7 +89,7 @@ describe Queries::WorkPackages::Filter::CustomFieldFilter,
     let(:operator) { '!~' }
 
     it 'returns the three non-matching work package' do
-      is_expected
+      expect(subject)
         .to match_array [wp_not_contains, wp_empty, wp_nil]
     end
   end

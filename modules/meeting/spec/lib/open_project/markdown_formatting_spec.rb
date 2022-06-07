@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -43,7 +43,7 @@ describe OpenProject::TextFormatting,
   end
 
   shared_let(:meeting) do
-    create :meeting, project: project, title: 'Monthly coordination'
+    create :meeting, project:, title: 'Monthly coordination'
   end
 
   subject do

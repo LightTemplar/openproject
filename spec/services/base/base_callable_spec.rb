@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -57,6 +57,7 @@ describe ::BaseServices::BaseCallable, type: :model do
   end
 
   let(:instance) { test_service.new }
+
   subject { instance.call }
 
   describe 'state' do
@@ -104,7 +105,7 @@ describe ::BaseServices::BaseCallable, type: :model do
 
       expect(state.service_chain.map(&:class)).to eq [test_service, test_service2]
       state.rollback!
-      expect(state.test2).to eq nil
+      expect(state.test2).to be_nil
       expect(state.test).to eq 'rolled back!'
     end
   end

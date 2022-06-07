@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -107,7 +105,7 @@ module Users
       user.register
 
       with_saved_user_result(success_message: I18n.t(:notice_account_register_done)) do
-        token = Token::Invitation.create!(user: user)
+        token = Token::Invitation.create!(user:)
         UserMailer.user_signed_up(token).deliver_later
         Rails.logger.info { "Scheduled email activation mail for #{user.login}" }
       end

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -32,7 +32,7 @@ require 'features/work_packages/work_packages_page'
 describe 'Work package index accessibility', type: :feature, selenium: true do
   let(:user) { create(:admin) }
   let(:project) { create(:project) }
-  let(:work_package) { create(:work_package, project: project) }
+  let(:work_package) { create(:work_package, project:) }
   let(:work_packages_page) { WorkPackagesPage.new(project) }
   let(:sort_ascending_selector) { '.icon-sort-ascending' }
   let(:sort_descending_selector) { '.icon-sort-descending' }
@@ -156,8 +156,9 @@ describe 'Work package index accessibility', type: :feature, selenium: true do
   describe 'hotkeys', js: true do
     let!(:another_work_package) do
       create(:work_package,
-                        project: project)
+             project:)
     end
+
     before do
       visit_index_page
     end

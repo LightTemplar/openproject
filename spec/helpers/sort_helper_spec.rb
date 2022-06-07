@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -69,7 +69,7 @@ describe SortHelper, type: :helper do
     context 'when sorting by the column' do
       let(:sort_key) { 'id' }
 
-      it 'should add the sort class' do
+      it 'adds the sort class' do
         expect(output).to be_html_eql(%{
           <th title="Ascending sorted by &quot;Id&quot;">
             <div class="generic-table--sort-header-outer">
@@ -89,7 +89,7 @@ describe SortHelper, type: :helper do
       let(:sort_key) { 'id' }
       let(:sort_asc) { false }
 
-      it 'should add the sort class' do
+      it 'adds the sort class' do
         expect(output).to be_html_eql(%{
           <th title="Descending sorted by &quot;Id&quot;">
             <div class="generic-table--sort-header-outer">

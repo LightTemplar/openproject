@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -69,7 +69,7 @@ describe 'Project details widget on dashboard', type: :feature, js: true do
   end
 
   let(:role) do
-    create(:role, permissions: permissions)
+    create(:role, permissions:)
   end
 
   let(:read_only_user) do
@@ -77,15 +77,15 @@ describe 'Project details widget on dashboard', type: :feature, js: true do
   end
   let(:editing_user) do
     create(:user,
-                      member_in_project: project,
-                      member_with_permissions: editing_permissions,
-                      firstname: 'Cool',
-                      lastname: 'Guy')
+           member_in_project: project,
+           member_with_permissions: editing_permissions,
+           firstname: 'Cool',
+           lastname: 'Guy')
   end
   let(:other_user) do
     create(:user,
-                      firstname: 'Other',
-                      lastname: 'User')
+           firstname: 'Other',
+           lastname: 'User')
   end
   let(:dashboard_page) do
     Pages::Dashboard.new(project)

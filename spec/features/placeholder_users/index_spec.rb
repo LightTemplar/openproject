@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,18 +37,18 @@ describe 'index placeholder users', type: :feature, js: true do
   let!(:anonymous) { create :anonymous }
   let!(:placeholder_user_1) do
     create(:placeholder_user,
-                      name: 'B',
-                      created_at: 3.minutes.ago)
+           name: 'B',
+           created_at: 3.minutes.ago)
   end
   let!(:placeholder_user_2) do
     create(:placeholder_user,
-                      name: 'A',
-                      created_at: 2.minutes.ago)
+           name: 'A',
+           created_at: 2.minutes.ago)
   end
   let!(:placeholder_user_3) do
     create(:placeholder_user,
-                      name: 'C',
-                      created_at: 1.minute.ago)
+           name: 'C',
+           created_at: 1.minute.ago)
   end
   let(:manager_role) { create :existing_role, permissions: [:manage_members] }
   let(:member_role) { create :existing_role, permissions: [:view_work_packages] }
@@ -105,21 +105,21 @@ describe 'index placeholder users', type: :feature, js: true do
         index_page.expect_delete_button(placeholder_user_3)
       end
     end
-    
+
     context 'when user is allowed to manage members only in some projects of the placeholder users' do
       let(:shared_project) do
         create(:project, members: {
-                            placeholder_user_1 => member_role,
-                            placeholder_user_2 => member_role,
-                            current_user => manager_role
-                          })
+                 placeholder_user_1 => member_role,
+                 placeholder_user_2 => member_role,
+                 current_user => manager_role
+               })
       end
 
       let(:not_shared_project) do
         create(:project, members: {
-                           placeholder_user_2 => member_role,
-                           placeholder_user_3 => member_role
-                         })
+                 placeholder_user_2 => member_role,
+                 placeholder_user_3 => member_role
+               })
       end
 
       before do

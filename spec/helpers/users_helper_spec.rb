@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -33,8 +33,8 @@ describe UsersHelper, type: :helper do
 
   def build_user(status, blocked)
     build_stubbed(:user,
-                             status: status,
-                             failed_login_count: 3).tap do |user|
+                  status:,
+                  failed_login_count: 3).tap do |user|
       allow(user)
         .to receive(:failed_too_many_recent_login_attempts?)
         .and_return(blocked)
@@ -70,7 +70,7 @@ describe UsersHelper, type: :helper do
           @status = full_user_status(user, true)
         end
 
-        it "should return #{expectation}" do
+        it "returns #{expectation}" do
           expect(@status).to eq(expectation)
         end
       end
@@ -93,11 +93,12 @@ describe UsersHelper, type: :helper do
           user = build_user(status, blocked)
           @buttons = change_user_status_buttons(user)
         end
-        it "should contain '#{expectation}'" do
+
+        it "contains '#{expectation}'" do
           expect(@buttons).to include(expectation)
         end
 
-        it 'should contain a single button' do
+        it 'contains a single button' do
           expect(@buttons.scan('<input').count).to eq(1)
         end
       end
@@ -109,11 +110,11 @@ describe UsersHelper, type: :helper do
         @buttons = change_user_status_buttons(user)
       end
 
-      it 'should return inputs (buttons)' do
+      it 'returns inputs (buttons)' do
         expect(@buttons.scan('<input').count).to eq(2)
       end
 
-      it "should contain 'Lock' and 'Reset Failed logins'" do
+      it "contains 'Lock' and 'Reset Failed logins'" do
         expect(@buttons).to include(I18n.t(:lock, scope: :user))
         expect(@buttons).to include(I18n.t(:reset_failed_logins, scope: :user))
       end

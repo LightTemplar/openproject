@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -26,7 +26,6 @@
 # See COPYRIGHT and LICENSE files for more details.
 #++
 
-require_dependency 'widget/base'
 class Widget::Filters < ::Widget::Base
   def render
     spacer = content_tag :li, '', class: 'advanced-filters--spacer hide-when-print'
@@ -67,10 +66,10 @@ class Widget::Filters < ::Widget::Base
     engine::Filter.all.select(&:selectable?).map do |filter|
       opts = { id: "filter_#{filter.underscore_name}",
                class: "#{filter.underscore_name} advanced-filters--filter",
-               "data-filter-name": filter.underscore_name }
+               'data-filter-name': filter.underscore_name }
       active_instance = active_filters.detect { |f| f.instance_of?(filter) }
       if active_instance
-        opts[:"data-selected"] = true
+        opts[:'data-selected'] = true
       else
         opts[:style] = 'display:none'
       end

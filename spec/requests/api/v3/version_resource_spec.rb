@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -35,19 +35,19 @@ describe 'API v3 Version resource', content_type: :json do
 
   let(:current_user) do
     create(:user,
-                      member_in_project: project,
-                      member_with_permissions: permissions)
+           member_in_project: project,
+           member_with_permissions: permissions)
   end
   let(:permissions) { %i[view_work_packages manage_versions] }
   let(:project) { create(:project, public: false) }
   let(:other_project) { create(:project, public: false) }
   let!(:int_cf) { create(:int_version_custom_field) }
-  let(:version_in_project) { build(:version, project: project, custom_field_values: { int_cf.id => 123 }) }
+  let(:version_in_project) { build(:version, project:, custom_field_values: { int_cf.id => 123 }) }
   let(:version_in_other_project) do
     build(:version,
-                     project: other_project,
-                     sharing: 'system',
-                     custom_field_values: { int_cf.id => 123 })
+          project: other_project,
+          sharing: 'system',
+          custom_field_values: { int_cf.id => 123 })
   end
 
   subject(:response) { last_response }
@@ -83,7 +83,7 @@ describe 'API v3 Version resource', content_type: :json do
         get get_path
       end
 
-      it_should_behave_like 'successful response' do
+      it_behaves_like 'successful response' do
         let(:expected_version) { version_in_project }
       end
     end
@@ -98,7 +98,7 @@ describe 'API v3 Version resource', content_type: :json do
         get get_path
       end
 
-      it_should_behave_like 'successful response' do
+      it_behaves_like 'successful response' do
         let(:expected_version) { version_in_other_project }
       end
     end
@@ -106,7 +106,7 @@ describe 'API v3 Version resource', content_type: :json do
     context 'logged in user without permission' do
       let(:permissions) { [] }
 
-      before(:each) do
+      before do
         version_in_project.save!
         login_as current_user
 
@@ -121,15 +121,15 @@ describe 'API v3 Version resource', content_type: :json do
     let(:path) { api_v3_paths.version(version.id) }
     let(:version) do
       create(:version,
-                        name: 'Old name',
-                        description: 'Old description',
-                        start_date: '2017-06-01',
-                        effective_date: '2017-07-01',
-                        status: 'open',
-                        sharing: 'none',
-                        project: project,
-                        custom_field_values: { int_cf.id => 123,
-                                               list_cf.id => list_cf.custom_options.first.id })
+             name: 'Old name',
+             description: 'Old description',
+             start_date: '2017-06-01',
+             effective_date: '2017-07-01',
+             status: 'open',
+             sharing: 'none',
+             project:,
+             custom_field_values: { int_cf.id => 123,
+                                    list_cf.id => list_cf.custom_options.first.id })
     end
     let!(:int_cf) { create(:int_version_custom_field) }
     let!(:list_cf) { create(:list_version_custom_field) }
@@ -140,10 +140,10 @@ describe 'API v3 Version resource', content_type: :json do
           raw: 'New description'
         },
         "customField#{int_cf.id}": 5,
-        "startDate": "2018-01-01",
-        "endDate": "2018-01-09",
-        "status": "closed",
-        "sharing": "descendants",
+        startDate: "2018-01-01",
+        endDate: "2018-01-09",
+        status: "closed",
+        sharing: "descendants",
         _links: {
           "customField#{list_cf.id}": {
             href: api_v3_paths.custom_option(list_cf.custom_options.last.id)
@@ -214,9 +214,9 @@ describe 'API v3 Version resource', content_type: :json do
       let(:other_project) do
         create(:project).tap do |p|
           create(:member,
-                            project: p,
-                            roles: [create(:role, permissions: [:manage_versions])],
-                            user: current_user)
+                 project: p,
+                 roles: [create(:role, permissions: [:manage_versions])],
+                 user: current_user)
         end
       end
 
@@ -225,8 +225,8 @@ describe 'API v3 Version resource', content_type: :json do
       let(:body) do
         {
           _links: {
-            "definingProject": {
-              "href": api_v3_paths.project(other_project.id)
+            definingProject: {
+              href: api_v3_paths.project(other_project.id)
 
             }
           }
@@ -251,8 +251,8 @@ describe 'API v3 Version resource', content_type: :json do
     context 'if having the manage permission in a different project' do
       let(:other_membership) do
         create(:member,
-                          project: create(:project),
-                          roles: [create(:role, permissions: [:manage_versions])])
+               project: create(:project),
+               roles: [create(:role, permissions: [:manage_versions])])
       end
 
       let(:permissions) do
@@ -277,10 +277,10 @@ describe 'API v3 Version resource', content_type: :json do
           raw: 'A new description'
         },
         "customField#{int_cf.id}": 5,
-        "startDate": "2018-01-01",
-        "endDate": "2018-01-09",
-        "status": "closed",
-        "sharing": "descendants",
+        startDate: "2018-01-01",
+        endDate: "2018-01-09",
+        status: "closed",
+        sharing: "descendants",
         _links: {
           definingProject: {
             href: api_v3_paths.project(project.id)
@@ -358,8 +358,8 @@ describe 'API v3 Version resource', content_type: :json do
     context 'if having the manage permission in a different project' do
       let(:other_membership) do
         create(:member,
-                          project: create(:project),
-                          roles: [create(:role, permissions: [:manage_versions])])
+               project: create(:project),
+               roles: [create(:role, permissions: [:manage_versions])])
       end
 
       let(:permissions) do
@@ -387,7 +387,7 @@ describe 'API v3 Version resource', content_type: :json do
 
     it 'succeeds' do
       expect(last_response.status)
-        .to eql(200)
+        .to be(200)
     end
 
     it_behaves_like 'API V3 collection response', 1, 1, 'Version'
@@ -400,7 +400,7 @@ describe 'API v3 Version resource', content_type: :json do
 
     context 'filtering for project by sharing' do
       let(:shared_version_in_project) do
-        build(:version, project: project, sharing: 'system')
+        build(:version, project:, sharing: 'system')
       end
       let(:versions) { [version_in_project, shared_version_in_project] }
 
@@ -426,7 +426,7 @@ describe 'API v3 Version resource', content_type: :json do
     let(:path) { api_v3_paths.version(version.id) }
     let(:version) do
       create(:version,
-                        project: project)
+             project:)
     end
 
     before do
@@ -456,16 +456,16 @@ describe 'API v3 Version resource', content_type: :json do
     context 'with work packages attached to it' do
       let(:version) do
         create(:version,
-                          project: project).tap do |v|
+               project:).tap do |v|
           create(:work_package,
-                            project: project,
-                            version: v)
+                 project:,
+                 version: v)
         end
       end
 
       it 'returns a 422' do
         expect(subject.status)
-          .to eql 422
+          .to be 422
       end
 
       it 'does not delete the version' do

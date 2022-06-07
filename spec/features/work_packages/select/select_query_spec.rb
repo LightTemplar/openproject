@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,7 +34,7 @@ describe 'Query selection', type: :feature do
   let(:role) { create :role, permissions: [:view_work_packages] }
   let(:current_user) do
     create :user, member_in_project: project,
-                             member_through_role: role
+                  member_through_role: role
   end
 
   let(:default_status) { create(:default_status) }
@@ -42,13 +42,13 @@ describe 'Query selection', type: :feature do
   let(:filters) { ::Components::WorkPackages::Filters.new }
 
   let(:query) do
-    build(:query, project: project, public: true).tap do |query|
+    build(:query, project:, public: true).tap do |query|
       query.filters.clear
       query.add_filter('assigned_to_id', '=', ['me'])
       query.add_filter('done_ratio', '>=', [10])
       query.save!
       create(:view_work_packages_table,
-                        query: query)
+             query:)
 
       query
     end
@@ -95,8 +95,8 @@ describe 'Query selection', type: :feature do
   context 'when the selected query is changed' do
     let(:query2) do
       create(:query_with_view_work_packages_table,
-                        project: project,
-                        public: true)
+             project:,
+             public: true)
     end
 
     before do

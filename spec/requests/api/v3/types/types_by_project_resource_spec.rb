@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -38,8 +38,8 @@ describe '/api/v3/projects/:id/types' do
   let(:requested_project) { project }
   let(:current_user) do
     create(:user,
-                      member_in_project: project,
-                      member_through_role: role)
+           member_in_project: project,
+           member_through_role: role)
   end
 
   let!(:irrelevant_types) { create_list(:type, 4) }
@@ -47,6 +47,7 @@ describe '/api/v3/projects/:id/types' do
 
   describe '#get' do
     let(:get_path) { api_v3_paths.types_by_project requested_project.id }
+
     subject(:response) { last_response }
 
     before do

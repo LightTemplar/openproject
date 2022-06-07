@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -77,6 +77,7 @@ describe Projects::Storage, type: :model do
 
     context 'with a project with all modules' do
       let(:repository1) { create(:repository_git, project: project1) }
+
       before do
         repository1.update(required_storage_bytes: 543211234)
       end

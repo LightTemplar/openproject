@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,10 +34,10 @@ describe 'Work Package budget fields', type: :feature, js: true do
   let!(:priority) { create(:priority, is_default: true) }
   let!(:project) { create(:project, types: [type_task]) }
   let(:user) { create :admin }
-  let!(:budget) { create :budget, author: user, project: project }
+  let!(:budget) { create :budget, author: user, project: }
 
-  let(:create_page) { ::Pages::FullWorkPackageCreate.new(project: project) }
-  let(:view_page) { ::Pages::FullWorkPackage.new(project: project) }
+  let(:create_page) { ::Pages::FullWorkPackageCreate.new(project:) }
+  let(:view_page) { ::Pages::FullWorkPackage.new(project:) }
 
   before do
     login_as(user)

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -36,38 +36,38 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
   let(:current_user) { member }
   let(:embed_links) { true }
   let(:representer) do
-    described_class.create(work_package, current_user: current_user, embed_links: embed_links)
+    described_class.create(work_package, current_user:, embed_links:)
   end
   let(:parent) { nil }
-  let(:priority) { build_stubbed(:priority, updated_at: Time.now) }
+  let(:priority) { build_stubbed(:priority, updated_at: Time.zone.now) }
   let(:assignee) { nil }
   let(:responsible) { nil }
   let(:schedule_manually) { nil }
-  let(:start_date) { Date.today.to_datetime }
-  let(:due_date) { Date.today.to_datetime }
+  let(:start_date) { Time.zone.today.to_datetime }
+  let(:due_date) { Time.zone.today.to_datetime }
   let(:type_milestone) { false }
   let(:estimated_hours) { nil }
   let(:derived_estimated_hours) { nil }
   let(:spent_hours) { 0 }
-  let(:derived_start_date) { Date.today - 4.days }
-  let(:derived_due_date) { Date.today - 5.days }
-  let(:budget) { build_stubbed(:budget, project: project) }
+  let(:derived_start_date) { Time.zone.today - 4.days }
+  let(:derived_due_date) { Time.zone.today - 5.days }
+  let(:budget) { build_stubbed(:budget, project:) }
   let(:work_package) do
     build_stubbed(:stubbed_work_package,
-                  schedule_manually: schedule_manually,
-                  start_date: start_date,
-                  due_date: due_date,
+                  schedule_manually:,
+                  start_date:,
+                  due_date:,
                   done_ratio: 50,
-                  parent: parent,
-                  type: type,
-                  project: project,
-                  priority: priority,
+                  parent:,
+                  type:,
+                  project:,
+                  priority:,
                   assigned_to: assignee,
-                  responsible: responsible,
-                  estimated_hours: estimated_hours,
-                  derived_estimated_hours: derived_estimated_hours,
-                  budget: budget,
-                  status: status) do |wp|
+                  responsible:,
+                  estimated_hours:,
+                  derived_estimated_hours:,
+                  budget:,
+                  status:) do |wp|
       allow(wp)
         .to receive(:available_custom_fields)
         .and_return(available_custom_fields)
@@ -97,6 +97,8 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
       add_work_packages
       view_time_entries
       view_changesets
+      view_file_links
+      manage_file_links
       delete_work_packages
     ]
   end
@@ -109,7 +111,7 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
 
     type
   end
-  let(:status) { build_stubbed(:status, updated_at: Time.now) }
+  let(:status) { build_stubbed(:status, updated_at: Time.zone.now) }
   let(:available_custom_fields) { [] }
 
   before(:each) do
@@ -123,7 +125,7 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
 
   describe '.new' do
     it 'is prevented as .create is to be used' do
-      expect { described_class.new(work_package, current_user: current_user, embed_links: embed_links) }
+      expect { described_class.new(work_package, current_user:, embed_links:) }
         .to raise_error NoMethodError
     end
   end
@@ -141,7 +143,7 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
       it_behaves_like 'API V3 formattable', 'description' do
         let(:format) { 'markdown' }
         let(:raw) { work_package.description }
-        let(:html) { '<p class="op-uc-p">' + work_package.description + '</p>' }
+        let(:html) { "<p class=\"op-uc-p\">#{work_package.description}</p>" }
       end
 
       describe 'scheduleManually' do
@@ -559,7 +561,7 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
         end
 
         context 'version set' do
-          let!(:version) { create :version, project: project }
+          let!(:version) { create :version, project: }
 
           before do
             work_package.version = version
@@ -711,6 +713,28 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
 
           it_behaves_like 'has no link' do
             let(:link) { 'addAttachment' }
+          end
+        end
+      end
+
+      describe 'fileLinks' do
+        it_behaves_like 'has an untitled link' do
+          let(:link) { 'fileLinks' }
+          let(:href) { api_v3_paths.file_links(work_package.id) }
+        end
+
+        it_behaves_like 'has an untitled action link' do
+          let(:permission) { :manage_file_links }
+          let(:link) { 'addFileLink' }
+          let(:href) { api_v3_paths.file_links(work_package.id) }
+          let(:method) { 'post' }
+        end
+
+        context 'if user has no permission to view file links' do
+          let(:permissions) { all_permissions - %i[view_file_links] }
+
+          it_behaves_like 'has no link' do
+            let(:link) { 'fileLinks' }
           end
         end
       end
@@ -919,9 +943,9 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
         end
 
         context 'ancestors' do
-          let(:root) { build_stubbed(:work_package, project: project) }
+          let(:root) { build_stubbed(:work_package, project:) }
           let(:intermediate) do
-            build_stubbed(:work_package, parent: root, project: project)
+            build_stubbed(:work_package, parent: root, project:)
           end
 
           context 'when ancestors are visible' do
@@ -952,11 +976,11 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
         end
 
         context 'children' do
-          let(:work_package) { create(:work_package, project: project) }
+          let(:work_package) { create(:work_package, project:) }
           let!(:forbidden_work_package) do
             create(:work_package,
-                              project: forbidden_project,
-                              parent: work_package)
+                   project: forbidden_project,
+                   parent: work_package)
           end
 
           it { expect(subject).not_to have_json_path('_links/children') }
@@ -964,8 +988,8 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
           describe 'visible and invisible children' do
             let!(:child) do
               create(:work_package,
-                                project: project,
-                                parent: work_package)
+                     project:,
+                     parent: work_package)
             end
 
             it { expect(subject).to have_json_size(1).at_path('_links/children') }
@@ -1075,8 +1099,8 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
       describe 'customActions' do
         it 'has a collection of customActions' do
           unassign_action = build_stubbed(:custom_action,
-                                                     actions: [CustomActions::Actions::AssignedTo.new(value: nil)],
-                                                     name: 'Unassign')
+                                          actions: [CustomActions::Actions::AssignedTo.new(value: nil)],
+                                          name: 'Unassign')
           allow(work_package)
             .to receive(:custom_actions)
             .and_return([unassign_action])
@@ -1119,13 +1143,19 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
       describe 'relations' do
         let(:relation) do
           build_stubbed(:relation,
-                                   from: work_package)
+                        from: work_package)
         end
 
         before do
+          scope = instance_double('ActiveRecord::Relation')
+
           allow(work_package)
-            .to receive_message_chain(:visible_relations, :direct, :non_hierarchy, :includes)
-            .and_return([relation])
+            .to receive(:visible_relations)
+                  .with(current_user)
+                  .and_return(scope)
+          allow(scope)
+            .to receive(:includes)
+                  .and_return([relation])
         end
 
         it 'embeds a collection' do
@@ -1151,11 +1181,42 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
         end
       end
 
+      describe 'fileLinks' do
+        let(:storage) { build_stubbed(:storage) }
+        let(:file_link) { build_stubbed(:file_link, storage:, container: work_package) }
+
+        before do
+          allow(work_package).to receive(:file_links).and_return([file_link])
+        end
+
+        it 'embeds a collection' do
+          is_expected
+            .to be_json_eql('Collection'.to_json)
+                  .at_path('_embedded/fileLinks/_type')
+        end
+
+        it 'embeds with an href containing the work_package' do
+          is_expected
+            .to be_json_eql(api_v3_paths.file_links(work_package.id).to_json)
+                  .at_path('_embedded/fileLinks/_links/self/href')
+        end
+
+        it 'embeds the visible file links' do
+          is_expected
+            .to be_json_eql(1.to_json)
+                  .at_path('_embedded/fileLinks/total')
+
+          is_expected
+            .to be_json_eql(api_v3_paths.file_link(file_link.id).to_json)
+                  .at_path('_embedded/fileLinks/_embedded/elements/0/_links/self/href')
+        end
+      end
+
       describe 'customActions' do
         it 'has an array of customActions' do
           unassign_action = build_stubbed(:custom_action,
-                                                     actions: [CustomActions::Actions::AssignedTo.new(value: nil)],
-                                                     name: 'Unassign')
+                                          actions: [CustomActions::Actions::AssignedTo.new(value: nil)],
+                                          name: 'Unassign')
           allow(work_package)
             .to receive(:custom_actions)
             .and_return([unassign_action])
@@ -1223,7 +1284,7 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
         end
 
         it 'changes when the work_package is updated' do
-          work_package.updated_at = Time.now + 20.seconds
+          work_package.updated_at = 20.seconds.from_now
 
           expect(representer.json_cache_key)
             .not_to eql former_cache_key

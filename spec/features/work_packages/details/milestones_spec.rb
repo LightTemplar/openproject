@@ -5,9 +5,9 @@ describe 'Milestones full screen v iew', js: true do
   let(:project) { create(:project, types: [type]) }
   let!(:work_package) do
     create(:work_package,
-                      project: project,
-                      type: type,
-                      subject: 'Foobar')
+           project:,
+           type:,
+           subject: 'Foobar')
   end
 
   let(:wp_page) { ::Pages::FullWorkPackage.new(work_package, project) }
@@ -22,7 +22,7 @@ describe 'Milestones full screen v iew', js: true do
     let(:user) do
       create(:user, member_in_project: project, member_through_role: role)
     end
-    let(:role) { create(:role, permissions: permissions) }
+    let(:role) { create(:role, permissions:) }
     let(:permissions) do
       %i[view_work_packages add_work_packages]
     end
@@ -39,7 +39,7 @@ describe 'Milestones full screen v iew', js: true do
     let(:user) do
       create(:user, member_in_project: project, member_through_role: role)
     end
-    let(:role) { create(:role, permissions: permissions) }
+    let(:role) { create(:role, permissions:) }
     let(:permissions) do
       %i[view_work_packages]
     end

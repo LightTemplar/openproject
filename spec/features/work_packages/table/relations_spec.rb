@@ -12,24 +12,24 @@ describe 'Work Package table relations', js: true do
   let(:columns) { ::Components::WorkPackages::Columns.new }
   let(:wp_timeline) { Pages::WorkPackagesTimeline.new(project) }
 
-  let!(:wp_from) { create(:work_package, project: project, type: type2) }
-  let!(:wp_to) { create(:work_package, project: project, type: type) }
-  let!(:wp_to2) { create(:work_package, project: project, type: type) }
+  let!(:wp_from) { create(:work_package, project:, type: type2) }
+  let!(:wp_to) { create(:work_package, project:, type:) }
+  let!(:wp_to2) { create(:work_package, project:, type:) }
 
   let!(:relation) do
     create(:relation,
-                      from: wp_from,
-                      to: wp_to,
-                      relation_type: Relation::TYPE_FOLLOWS)
+           from: wp_from,
+           to: wp_to,
+           relation_type: Relation::TYPE_FOLLOWS)
   end
   let!(:relation2) do
     create(:relation,
-                      from: wp_from,
-                      to: wp_to2,
-                      relation_type: Relation::TYPE_FOLLOWS)
+           from: wp_from,
+           to: wp_to2,
+           relation_type: Relation::TYPE_FOLLOWS)
   end
   let!(:query) do
-    query              = build(:query, user: user, project: project)
+    query              = build(:query, user:, project:)
     query.column_names = ['subject']
     query.filters.clear
 

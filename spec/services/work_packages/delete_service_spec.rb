@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -39,15 +37,16 @@ describe WorkPackages::DeleteService do
   end
   let(:instance) do
     described_class
-      .new(user: user,
+      .new(user:,
            model: work_package)
   end
   let(:destroyed_result) { true }
   let(:destroy_allowed) { true }
+
   subject { instance.call }
 
   before do
-    expect(work_package)
+    allow(work_package)
       .to receive(:reload)
       .and_return(work_package)
 
@@ -87,7 +86,7 @@ describe WorkPackages::DeleteService do
   context 'when the work package could not be destroyed' do
     let(:destroyed_result) { false }
 
-    it 'it is no success' do
+    it 'is no success' do
       expect(subject)
         .not_to be_success
     end
@@ -113,8 +112,8 @@ describe WorkPackages::DeleteService do
 
       expect(WorkPackages::UpdateAncestorsService)
         .to receive(:new)
-        .with(user: user,
-              work_package: work_package)
+        .with(user:,
+              work_package:)
         .and_return(inherited_service_instance)
 
       expect(inherited_service_instance)

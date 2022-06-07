@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -162,10 +160,10 @@ shared_examples_for 'type service' do
           .to eql query
 
         expect(query.filters.length)
-          .to eql 1
+          .to be 1
 
         expect(query.filters[0].name)
-          .to eql :status_id
+          .to be :status_id
       end
 
       context 'when the query service reports an error' do

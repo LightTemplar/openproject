@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,19 +34,19 @@ require_relative './../support/board_page'
 describe 'Version action board', type: :feature, js: true do
   let(:user) do
     create(:user,
-                      member_in_projects: [project, second_project],
-                      member_through_role: role)
+           member_in_projects: [project, second_project],
+           member_through_role: role)
   end
 
   let(:second_user) do
     create(:user,
-                      member_in_projects: [project, second_project],
-                      member_through_role: role_board_manager)
+           member_in_projects: [project, second_project],
+           member_through_role: role_board_manager)
   end
   let(:type) { create(:type_standard) }
   let!(:priority) { create :default_priority }
   let!(:status) { create :default_status }
-  let(:role) { create(:role, permissions: permissions) }
+  let(:role) { create(:role, permissions:) }
   let(:role_board_manager) { create(:role, permissions: permissions_board_manager) }
 
   let(:project) { create(:project, types: [type], enabled_module_names: %i[work_package_tracking board_view]) }
@@ -61,14 +61,14 @@ describe 'Version action board', type: :feature, js: true do
     %i[show_board_views manage_board_views view_work_packages manage_public_queries]
   end
 
-  let!(:open_version) { create :version, project: project, name: 'Open version' }
-  let!(:other_version) { create :version, project: project, name: 'A second version' }
+  let!(:open_version) { create :version, project:, name: 'Open version' }
+  let!(:other_version) { create :version, project:, name: 'A second version' }
   let!(:different_project_version_) { create :version, project: second_project, name: 'Version of another project' }
   let!(:shared_version) { create :version, project: second_project, name: 'Shared version', sharing: 'system' }
-  let!(:closed_version) { create :version, project: project, status: 'closed', name: 'Closed version' }
+  let!(:closed_version) { create :version, project:, status: 'closed', name: 'Closed version' }
 
-  let!(:work_package) { create :work_package, project: project, subject: 'Foo', version: open_version }
-  let!(:closed_version_wp) { create :work_package, project: project, subject: 'Closed', version: closed_version }
+  let!(:work_package) { create :work_package, project:, subject: 'Foo', version: open_version }
+  let!(:closed_version_wp) { create :work_package, project:, subject: 'Closed', version: closed_version }
   let(:filters) { ::Components::WorkPackages::Filters.new }
 
   def create_new_version_board
@@ -308,8 +308,8 @@ describe 'Version action board', type: :feature, js: true do
   context 'a user with edit_work_packages, but missing assign_versions permissions' do
     let(:no_version_edit_user) do
       create(:user,
-                        member_in_projects: [project],
-                        member_through_role: no_version_edit_role)
+             member_in_projects: [project],
+             member_through_role: no_version_edit_role)
     end
     let(:no_version_edit_role) { create(:role, permissions: no_version_edit_permissions) }
     let(:no_version_edit_permissions) do

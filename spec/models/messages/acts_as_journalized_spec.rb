@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -33,15 +33,16 @@ describe Message, 'acts_as_journalized', type: :model do
   let(:project) { create(:project) }
   let!(:forum) do
     create(:forum,
-                      project: project)
+           project:)
   end
   let(:attachment) { create(:attachment, container: nil, author: user) }
 
   context 'on creation' do
     context 'attachments' do
       before do
-        Message.create! forum: forum, subject: 'Test message', content: 'Message body', attachments: [attachment]
+        Message.create! forum:, subject: 'Test message', content: 'Message body', attachments: [attachment]
       end
+
       let(:attachment_id) { "attachments_#{attachment.id}" }
       let(:filename) { attachment.filename }
 

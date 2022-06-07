@@ -1,15 +1,19 @@
 require_relative '../spec_helper'
 
-describe 'Admin 2FA management', with_2fa_ee: true, type: :feature,
-                                 with_config: { '2fa': { active_strategies: %i[developer totp] } },
-                                 js: true do
+describe 'Admin 2FA management',
+         with_2fa_ee: true,
+         type: :feature,
+         with_settings: {
+           plugin_openproject_two_factor_authentication: { 'active_strategies' => %i[developer totp] }
+         },
+         js: true do
   let(:dialog) { ::Components::PasswordConfirmationDialog.new }
   let(:user_password) { 'admin!' * 4 }
   let(:other_user) { create :user, login: 'bob' }
   let(:admin) do
     create(:admin,
-                      password: user_password,
-                      password_confirmation: user_password)
+           password: user_password,
+           password_confirmation: user_password)
   end
 
   before do
@@ -24,7 +28,7 @@ describe 'Admin 2FA management', with_2fa_ee: true, type: :feature,
     page.find('.admin--edit-section a').click
 
     expect(page).to have_selector('.generic-table--empty-row')
-    expect(current_path).to eq my_2fa_devices_path
+    expect(page).to have_current_path my_2fa_devices_path
   end
 
   it 'allows 2FA device management of the user' do

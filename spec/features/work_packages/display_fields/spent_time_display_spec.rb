@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -33,14 +33,14 @@ describe 'Logging time within the work package view', type: :feature, js: true d
   let(:admin) { create :admin }
   let(:user_without_permissions) do
     create(:user,
-                      member_in_project: project,
-                      member_with_permissions: %i[view_time_entries view_work_packages edit_work_packages])
+           member_in_project: project,
+           member_with_permissions: %i[view_time_entries view_work_packages edit_work_packages])
   end
 
-  let!(:activity) { create :time_entry_activity, project: project }
+  let!(:activity) { create :time_entry_activity, project: }
   let(:spent_time_field) { ::SpentTimeEditField.new(page, 'spentTime') }
 
-  let(:work_package) { create :work_package, project: project }
+  let(:work_package) { create :work_package, project: }
   let(:wp_page) { Pages::FullWorkPackage.new(work_package, project) }
 
   let(:time_logging_modal) { ::Components::TimeLoggingModal.new }
@@ -121,8 +121,8 @@ describe 'Logging time within the work package view', type: :feature, js: true d
 
     context 'within the table' do
       let(:wp_table) { Pages::WorkPackagesTable.new(project) }
-      let(:second_work_package) { create :work_package, project: project }
-      let(:query) { create :public_query, project: project, column_names: ['subject', 'spent_hours'] }
+      let(:second_work_package) { create :work_package, project: }
+      let(:query) { create :public_query, project:, column_names: ['subject', 'spent_hours'] }
 
       before do
         work_package

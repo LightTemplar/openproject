@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -68,8 +68,9 @@ describe ::API::V3::Activities::ActivityRepresenter do
   describe 'type' do
     context 'if a bcf_comment is present' do
       let(:notes) { '' }
+
       it 'is Activity::BcfComment' do
-        is_expected
+        expect(subject)
           .to be_json_eql('Activity::BcfComment'.to_json)
           .at_path('_type')
       end

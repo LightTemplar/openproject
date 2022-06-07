@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,6 +35,7 @@ module API
         include API::Decorators::FormattableProperty
         include API::Caching::CachedRepresenter
         include ::API::V3::Attachments::AttachableRepresenterMixin
+        include ::API::V3::FileLinks::FileLinkRelationRepresenter
         extend ::API::V3::Utilities::CustomFieldInjector::RepresenterClass
 
         cached_representer key_parts: %i(project),
@@ -288,7 +287,7 @@ module API
           filters = [{ work_package_id: { operator: "=", values: [represented.id.to_s] } }]
 
           {
-            href: api_v3_paths.path_for(:time_entries, filters: filters),
+            href: api_v3_paths.path_for(:time_entries, filters:),
             title: 'Time entries'
           }
         end
@@ -353,10 +352,10 @@ module API
                         next unless doc.key?('date')
 
                         date = decorator
-                               .datetime_formatter
-                               .parse_date(doc['date'],
-                                           name.to_s.camelize(:lower),
-                                           allow_nil: true)
+                                 .datetime_formatter
+                                 .parse_date(doc['date'],
+                                             name.to_s.camelize(:lower),
+                                             allow_nil: true)
 
                         self.due_date = self.start_date = date
                       },
@@ -434,14 +433,16 @@ module API
         associated_resource :responsible,
                             getter: ::API::V3::Principals::PrincipalRepresenterFactory
                                       .create_getter_lambda(:responsible),
-                            setter: PrincipalSetter.lambda(:responsible),
+                            setter: ::API::V3::Principals::PrincipalRepresenterFactory
+                                      .create_setter_lambda(:responsible),
                             link: ::API::V3::Principals::PrincipalRepresenterFactory
                                     .create_link_lambda(:responsible)
 
         associated_resource :assignee,
                             getter: ::API::V3::Principals::PrincipalRepresenterFactory
                                       .create_getter_lambda(:assigned_to),
-                            setter: PrincipalSetter.lambda(:assigned_to, :assignee),
+                            setter: ::API::V3::Principals::PrincipalRepresenterFactory
+                                      .create_setter_lambda(:assigned_to, property_name: :assignee),
                             link: ::API::V3::Principals::PrincipalRepresenterFactory
                                     .create_link_lambda(:assigned_to)
 
@@ -475,13 +476,13 @@ module API
 
                               new_parent = if href
                                              id = ::API::Utilities::ResourceLinkParser
-                                                  .parse_id href,
-                                                            property: 'parent',
-                                                            expected_version: '3',
-                                                            expected_namespace: 'work_packages'
+                                                    .parse_id href,
+                                                              property: 'parent',
+                                                              expected_version: '3',
+                                                              expected_namespace: 'work_packages'
 
-                                             WorkPackage.find_by(id: id) ||
-                                               ::WorkPackage::InexistentWorkPackage.new(id: id)
+                                             WorkPackage.find_by(id:) ||
+                                               ::WorkPackage::InexistentWorkPackage.new(id:)
                                            end
 
                               represented.parent = new_parent
@@ -506,7 +507,7 @@ module API
                   },
                   getter: ->(*) {
                     ordered_custom_actions.map do |action|
-                      ::API::V3::CustomActions::CustomActionRepresenter.new(action, current_user: current_user)
+                      ::API::V3::CustomActions::CustomActionRepresenter.new(action, current_user:)
                     end
                   },
                   setter: ->(*) do
@@ -538,23 +539,19 @@ module API
         def relations
           self_path = api_v3_paths.work_package_relations(represented.id)
           visible_relations = represented
-                              .visible_relations(current_user)
-                              .direct
-                              .non_hierarchy
-                              .includes(::API::V3::Relations::RelationCollectionRepresenter.to_eager_load)
+                                .visible_relations(current_user)
+                                .includes(::API::V3::Relations::RelationCollectionRepresenter.to_eager_load)
 
           ::API::V3::Relations::RelationCollectionRepresenter.new(visible_relations,
                                                                   self_link: self_path,
-                                                                  current_user: current_user)
+                                                                  current_user:)
         end
 
         def visible_children
           @visible_children ||= represented.children.select(&:visible?)
         end
 
-        def schedule_manually=(value)
-          represented.schedule_manually = value
-        end
+        delegate :schedule_manually=, to: :represented
 
         def estimated_time=(value)
           represented.estimated_hours = datetime_formatter.parse_duration_to_hours(value,
@@ -564,7 +561,7 @@ module API
 
         def derived_estimated_time=(value)
           represented.derived_estimated_hours = datetime_formatter
-            .parse_duration_to_hours(value, 'derivedEstimatedTime', allow_nil: true)
+                                                  .parse_duration_to_hours(value, 'derivedEstimatedTime', allow_nil: true)
         end
 
         def spent_time=(value)

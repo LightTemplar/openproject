@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -39,24 +39,24 @@ describe Authorization::UserGlobalRolesQuery do
   let(:anonymous_role) { build(:anonymous_role) }
   let(:non_member) { build(:non_member) }
   let(:member) do
-    build(:member, project: project,
-                              roles: [role],
-                              principal: user)
+    build(:member, project:,
+                   roles: [role],
+                   principal: user)
   end
   let(:member2) do
     build(:member, project: project2,
-                              roles: [role2],
-                              principal: user)
+                   roles: [role2],
+                   principal: user)
   end
   let(:global_permission) { OpenProject::AccessControl.permissions.find { |p| p.global? } }
   let(:global_role) do
     build(:global_role,
-                     permissions: [global_permission.name])
+          permissions: [global_permission.name])
   end
   let(:global_member) do
     build(:global_member,
-                     principal: user,
-                     roles: [global_role])
+          principal: user,
+          roles: [global_role])
   end
 
   describe '.query' do

@@ -1,5 +1,3 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) 2012-2020 the OpenProject GmbH
@@ -41,9 +39,9 @@ describe WorkPackages::UpdateContract do
   end
   let(:work_package) do
     build_stubbed(:work_package,
-                             project: work_package_project,
-                             type: type,
-                             status: status).tap do |wp|
+                  project: work_package_project,
+                  type:,
+                  status:).tap do |wp|
       wp_scope = double('wp scope')
 
       allow(WorkPackage)
@@ -74,7 +72,7 @@ describe WorkPackages::UpdateContract do
   it_behaves_like 'work package contract' do
     let(:work_package) do
       build_stubbed(:work_package,
-                               project: work_package_project)
+                    project: work_package_project)
     end
   end
 
@@ -108,6 +106,7 @@ describe WorkPackages::UpdateContract do
 
   describe 'authorization' do
     let(:attributes) { {} }
+
     before do
       work_package.attributes = attributes
       contract.validate
@@ -167,8 +166,8 @@ describe WorkPackages::UpdateContract do
     before do
       allow(user)
         .to receive(:allowed_to?) do |permission, context|
-        permissions.include?(permission) && context == work_package_project ||
-          target_permissions.include?(permission) && context == target_project
+        (permissions.include?(permission) && context == work_package_project) ||
+          (target_permissions.include?(permission) && context == target_project)
       end
 
       allow(work_package)
@@ -191,6 +190,7 @@ describe WorkPackages::UpdateContract do
 
     context 'if the user lacks the permissions' do
       let(:target_permissions) { [] }
+
       it 'is invalid' do
         expect(contract.errors.symbols_for(:project_id)).to match_array([:error_readonly])
       end
@@ -246,10 +246,11 @@ describe WorkPackages::UpdateContract do
   describe 'with children' do
     context 'changing to milestone' do
       let(:milestone) { build_stubbed :type, is_milestone: true }
+      let(:children) { [build_stubbed(:work_package)] }
 
       before do
         work_package.type = milestone
-        allow(work_package).to receive_message_chain(:children, :any?).and_return true
+        allow(work_package).to receive(:children).and_return children
         contract.validate
       end
 

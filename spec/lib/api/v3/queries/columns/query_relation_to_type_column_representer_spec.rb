@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -28,7 +28,7 @@
 
 require 'spec_helper'
 
-describe ::API::V3::Queries::Columns::QueryRelationToTypeColumnRepresenter, clear_cache: true do
+describe ::API::V3::Queries::Columns::QueryRelationToTypeColumnRepresenter do
   include ::API::V3::Utilities::PathHelper
 
   let(:type) { build_stubbed(:type) }
@@ -53,19 +53,19 @@ describe ::API::V3::Queries::Columns::QueryRelationToTypeColumnRepresenter, clea
     end
 
     it 'has _type QueryColumn::RelationToType' do
-      is_expected
+      expect(subject)
         .to be_json_eql('QueryColumn::RelationToType'.to_json)
         .at_path('_type')
     end
 
     it 'has id attribute' do
-      is_expected
+      expect(subject)
         .to be_json_eql("relationsToType#{type.id}".to_json)
         .at_path('id')
     end
 
     it 'has name attribute' do
-      is_expected
+      expect(subject)
         .to be_json_eql("Relations to #{type.name}".to_json)
         .at_path('name')
     end

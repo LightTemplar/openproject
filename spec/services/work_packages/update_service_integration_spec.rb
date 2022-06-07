@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -33,10 +31,10 @@ require 'spec_helper'
 describe WorkPackages::UpdateService, 'integration tests', type: :model, with_mail: false do
   let(:user) do
     create(:user,
-                      member_in_project: project,
-                      member_through_role: role)
+           member_in_project: project,
+           member_through_role: role)
   end
-  let(:role) { create(:role, permissions: permissions) }
+  let(:role) { create(:role, permissions:) }
   let(:permissions) do
     %i(view_work_packages edit_work_packages add_work_packages move_work_packages manage_subtasks)
   end
@@ -51,22 +49,22 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       type_id: type.id,
       author_id: user.id,
       status_id: status.id,
-      priority: priority }
+      priority: }
   end
   let(:work_package) do
     create(:work_package,
-                      work_package_attributes)
+           work_package_attributes)
   end
   let(:parent_work_package) do
     create(:work_package,
-                      work_package_attributes).tap do |w|
+           work_package_attributes).tap do |w|
       w.children << work_package
       work_package.reload
     end
   end
   let(:grandparent_work_package) do
     create(:work_package,
-                      work_package_attributes).tap do |w|
+           work_package_attributes).tap do |w|
       w.children << parent_work_package
     end
   end
@@ -78,28 +76,28 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
   end
   let(:sibling1_work_package) do
     create(:work_package,
-                      sibling1_attributes)
+           sibling1_attributes)
   end
   let(:sibling2_work_package) do
     create(:work_package,
-                      sibling2_attributes)
+           sibling2_attributes)
   end
   let(:child_attributes) do
     work_package_attributes.merge(parent: work_package)
   end
   let(:child_work_package) do
     create(:work_package,
-                      child_attributes)
+           child_attributes)
   end
   let(:grandchild_attributes) do
     work_package_attributes.merge(parent: child_work_package)
   end
   let(:grandchild_work_package) do
     create(:work_package,
-                      grandchild_attributes)
+           grandchild_attributes)
   end
   let(:instance) do
-    described_class.new(user: user,
+    described_class.new(user:,
                         model: work_package)
   end
 
@@ -123,13 +121,13 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
     describe 'updating project' do
       let(:target_project) do
         p = create(:project,
-                              types: target_types,
-                              parent: target_parent)
+                   types: target_types,
+                   parent: target_parent)
 
         create(:member,
-                          user: user,
-                          project: p,
-                          roles: [create(:role, permissions: target_permissions)])
+               user:,
+               project: p,
+               roles: [create(:role, permissions: target_permissions)])
 
         p
       end
@@ -150,11 +148,11 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       describe 'time_entries' do
         let!(:time_entries) do
           [create(:time_entry,
-                             project: project,
-                             work_package: work_package),
+                  project:,
+                  work_package:),
            create(:time_entry,
-                             project: project,
-                             work_package: work_package)]
+                  project:,
+                  work_package:)]
         end
 
         it 'moves the time entries along' do
@@ -168,7 +166,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
         describe 'categories' do
           let(:category) do
             create(:category,
-                              project: project)
+                   project:)
           end
 
           before do
@@ -179,8 +177,8 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           context 'with equally named category' do
             let!(:target_category) do
               create(:category,
-                                name: category.name,
-                                project: target_project)
+                     name: category.name,
+                     project: target_project)
             end
 
             it 'replaces the current category by the equally named one' do
@@ -195,7 +193,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           context 'w/o target category' do
             let!(:other_category) do
               create(:category,
-                                project: target_project)
+                     project: target_project)
             end
 
             it 'removes the category' do
@@ -212,14 +210,14 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           let(:sharing) { 'none' }
           let(:version) do
             create(:version,
-                              status: 'open',
-                              project: project,
-                              sharing: sharing)
+                   status: 'open',
+                   project:,
+                   sharing:)
           end
           let(:work_package) do
             create(:work_package,
-                              version: version,
-                              project: project)
+                   version:,
+                   project:)
           end
 
           context 'unshared version' do
@@ -279,10 +277,10 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           let(:default_type) { type }
           let(:project_types) { [type, other_type] }
           let!(:workflow_type) do
-            create(:workflow, type: default_type, role: role, old_status_id: status.id)
+            create(:workflow, type: default_type, role:, old_status_id: status.id)
           end
           let!(:workflow_other_type) do
-            create(:workflow, type: other_type, role: role, old_status_id: status.id)
+            create(:workflow, type: other_type, role:, old_status_id: status.id)
           end
 
           context 'with the type existing in the target project' do
@@ -398,7 +396,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           type_id: type.id,
           author_id: user.id,
           status_id: status.id,
-          priority: priority,
+          priority:,
           estimated_hours: 10 }
       end
 
@@ -430,8 +428,8 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
 
         # calculated
         # sibling1 not factored in as its estimated_hours are nil
-        calculated_ratio = (work_package.done_ratio * work_package.estimated_hours +
-                            sibling2_work_package.done_ratio * sibling2_work_package.estimated_hours) /
+        calculated_ratio = ((work_package.done_ratio * work_package.estimated_hours) +
+                            (sibling2_work_package.done_ratio * sibling2_work_package.estimated_hours)) /
                            (work_package.done_ratio +
                             sibling2_work_package.done_ratio)
 
@@ -495,7 +493,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
 
           wp.reload
 
-          expect(wp.estimated_hours).to eql(nil)
+          expect(wp.estimated_hours).to be_nil
           expect(wp.derived_estimated_hours).to eql(sum)
         end
 
@@ -518,26 +516,22 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
     describe 'closing duplicates on closing status' do
       let(:status_closed) do
         create(:status,
-                          is_closed: true).tap do |status_closed|
+               is_closed: true).tap do |status_closed|
           create(:workflow,
-                            old_status: status,
-                            new_status: status_closed,
-                            type: type,
-                            role: role)
+                 old_status: status,
+                 new_status: status_closed,
+                 type:,
+                 role:)
         end
       end
-      let(:duplicate_work_package) do
+      let!(:duplicate_work_package) do
         create(:work_package,
-                          work_package_attributes).tap do |wp|
-          wp.duplicated << work_package
+               work_package_attributes).tap do |wp|
+          create(:relation, relation_type: Relation::TYPE_DUPLICATES, from: wp, to: work_package)
         end
       end
 
       let(:attributes) { { status: status_closed } }
-
-      before do
-        duplicate_work_package
-      end
 
       it 'works and closes duplicates' do
         expect(subject)
@@ -566,9 +560,13 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           type_id: type.id,
           author_id: user.id,
           status_id: status.id,
-          priority: priority,
+          priority:,
           start_date: Date.today,
           due_date: Date.today + 5.days }
+      end
+      let(:attributes) do
+        { start_date: Date.today + 5.days,
+          due_date: Date.today + 10.days }
       end
       let(:following_attributes) do
         work_package_attributes.merge(parent: following_parent_work_package,
@@ -578,8 +576,8 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following_work_package) do
         create(:work_package,
-                          following_attributes).tap do |wp|
-          wp.follows << work_package
+               following_attributes).tap do |wp|
+          create(:follows_relation, from: wp, to: work_package)
         end
       end
       let(:following_parent_attributes) do
@@ -589,7 +587,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following_parent_work_package) do
         create(:work_package,
-                          following_parent_attributes)
+               following_parent_attributes)
       end
       let(:following2_attributes) do
         work_package_attributes.merge(parent: following2_parent_work_package,
@@ -599,7 +597,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following2_work_package) do
         create(:work_package,
-                          following2_attributes)
+               following2_attributes)
       end
       let(:following2_parent_attributes) do
         work_package_attributes.merge(subject: 'following2_parent',
@@ -608,8 +606,8 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following2_parent_work_package) do
         create(:work_package,
-                          following2_parent_attributes).tap do |wp|
-          wp.follows << following_parent_work_package
+               following2_parent_attributes).tap do |wp|
+          create(:follows_relation, from: wp, to: following_parent_work_package)
         end
       end
       let(:following3_attributes) do
@@ -620,8 +618,8 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following3_work_package) do
         create(:work_package,
-                          following3_attributes).tap do |wp|
-          wp.follows << following2_work_package
+               following3_attributes).tap do |wp|
+          create(:follows_relation, from: wp, to: following2_work_package)
         end
       end
       let(:following3_parent_attributes) do
@@ -631,7 +629,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following3_parent_work_package) do
         create(:work_package,
-                          following3_parent_attributes)
+               following3_parent_attributes)
       end
       let(:following3_sibling_attributes) do
         work_package_attributes.merge(parent: following3_parent_work_package,
@@ -641,7 +639,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following3_sibling_work_package) do
         create(:work_package,
-                          following3_sibling_attributes)
+               following3_sibling_attributes)
       end
 
       before do
@@ -653,11 +651,6 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
         following3_parent_work_package
         following3_work_package
         following3_sibling_work_package
-      end
-
-      let(:attributes) do
-        { start_date: Date.today + 5.days,
-          due_date: Date.today + 10.days }
       end
 
       it 'propagates the changes to start/finish date along' do
@@ -740,9 +733,13 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           type_id: type.id,
           author_id: user.id,
           status_id: status.id,
-          priority: priority,
+          priority:,
           start_date: Date.today,
           due_date: Date.today + 5.days }
+      end
+      let(:attributes) do
+        { start_date: Date.today - 5.days,
+          due_date: Date.today }
       end
       let(:following_attributes) do
         work_package_attributes.merge(parent: following_parent_work_package,
@@ -752,8 +749,8 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following_work_package) do
         create(:work_package,
-                          following_attributes).tap do |wp|
-          wp.follows << work_package
+               following_attributes).tap do |wp|
+          create(:follows_relation, from: wp, to: work_package)
         end
       end
       let(:following_parent_attributes) do
@@ -763,7 +760,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following_parent_work_package) do
         create(:work_package,
-                          following_parent_attributes)
+               following_parent_attributes)
       end
       let(:other_attributes) do
         work_package_attributes.merge(subject: 'other',
@@ -772,7 +769,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:other_work_package) do
         create(:work_package,
-                          other_attributes)
+               other_attributes)
       end
       let(:following2_attributes) do
         work_package_attributes.merge(parent: following2_parent_work_package,
@@ -782,7 +779,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following2_work_package) do
         create(:work_package,
-                          following2_attributes)
+               following2_attributes)
       end
       let(:following2_parent_attributes) do
         work_package_attributes.merge(subject: 'following2_parent',
@@ -791,15 +788,15 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following2_parent_work_package) do
         following2 = create(:work_package,
-                                       following2_parent_attributes).tap do |wp|
-          wp.follows << following_parent_work_package
+                            following2_parent_attributes).tap do |wp|
+          create(:follows_relation, from: wp, to: following_parent_work_package)
         end
 
         create(:relation,
-                          relation_type: Relation::TYPE_FOLLOWS,
-                          from: following2,
-                          to: other_work_package,
-                          delay: 3)
+               relation_type: Relation::TYPE_FOLLOWS,
+               from: following2,
+               to: other_work_package,
+               delay: 3)
 
         following2
       end
@@ -810,8 +807,8 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
       let(:following3_work_package) do
         create(:work_package,
-                          following3_attributes).tap do |wp|
-          wp.follows << following2_work_package
+               following3_attributes).tap do |wp|
+          create(:follows_relation, from: wp, to: following2_work_package)
         end
       end
 
@@ -823,11 +820,6 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
         following2_parent_work_package
         following2_work_package
         following3_work_package
-      end
-
-      let(:attributes) do
-        { start_date: Date.today - 5.days,
-          due_date: Date.today }
       end
 
       it 'propagates the changes to start/finish date along' do
@@ -850,7 +842,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
 
         following_parent_work_package.reload(select: %i(start_date due_date))
         expect(following_parent_work_package.start_date)
-          .to eql Date.today + 1.days
+          .to eql Date.today + 1.day
 
         expect(following_parent_work_package.due_date)
           .to eql Date.today + 15.days
@@ -886,11 +878,12 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           type_id: type.id,
           author_id: user.id,
           status_id: status.id,
-          priority: priority,
+          priority:,
           start_date: Date.today + 3.days,
           due_date: Date.today + 9.days
         }
       end
+      let(:attributes) { { parent: new_parent_work_package } }
       let(:former_parent_work_package) do
         create(:work_package, former_parent_attributes)
       end
@@ -912,7 +905,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           type_id: type.id,
           author_id: user.id,
           status_id: status.id,
-          priority: priority,
+          priority:,
           parent: former_parent_work_package,
           start_date: Date.today + 7.days,
           due_date: Date.today + 9.days }
@@ -950,8 +943,6 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
         new_sibling_work_package.reload
       end
 
-      let(:attributes) { { parent: new_parent_work_package } }
-
       it 'changes the parent reference and reschedules former and new parent' do
         expect(subject)
           .to be_success
@@ -965,14 +956,14 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
         expect(work_package.due_date)
           .to eql work_package_attributes[:due_date]
 
-        # updates the former parent's dates
+        # updates the former parent's dates based on the only remaining child (former sibling)
         former_parent_work_package.reload
         expect(former_parent_work_package.start_date)
           .to eql former_sibling_attributes[:start_date]
         expect(former_parent_work_package.due_date)
           .to eql former_sibling_attributes[:due_date]
 
-        # updates the new parent's dates
+        # updates the new parent's dates based on the moved work package and its now sibling
         new_parent_work_package.reload
         expect(new_parent_work_package.start_date)
           .to eql work_package_attributes[:start_date]
@@ -991,6 +982,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           due_date: Date.today + 14.days
         )
       end
+      let(:attributes) { { parent: new_parent_work_package } }
       let(:new_parent_work_package) do
         create(:work_package, new_parent_attributes)
       end
@@ -1004,11 +996,9 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
         )
       end
       let(:new_parent_predecessor_work_package) do
-        wp = create(:work_package, new_parent_predecessor_attributes)
-
-        wp.precedes << new_parent_work_package
-
-        wp
+        create(:work_package, new_parent_predecessor_attributes).tap do |wp|
+          create(:follows_relation, from: new_parent_work_package, to: wp)
+        end
       end
 
       let(:work_package_attributes) do
@@ -1016,7 +1006,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           type_id: type.id,
           author_id: user.id,
           status_id: status.id,
-          priority: priority,
+          priority:,
           start_date: Date.today,
           due_date: Date.today + 3.days }
       end
@@ -1026,8 +1016,6 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
         new_parent_work_package.reload
         new_parent_predecessor_work_package.reload
       end
-
-      let(:attributes) { { parent: new_parent_work_package } }
 
       it 'reschedules the parent and the work package while adhering to the limitation imposed by the predecessor' do
         expect(subject)
@@ -1067,11 +1055,12 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           type_id: type.id,
           author_id: user.id,
           status_id: status.id,
-          priority: priority,
+          priority:,
           parent: parent_work_package,
           start_date: Date.today,
           due_date: Date.today + 3.days }
       end
+      let(:attributes) { { parent: nil } }
 
       let(:parent_attributes) do
         { project_id: project.id,
@@ -1079,7 +1068,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
           type_id: type.id,
           author_id: user.id,
           status_id: status.id,
-          priority: priority,
+          priority:,
           start_date: Date.today,
           due_date: Date.today + 10.days }
       end
@@ -1097,11 +1086,9 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
       end
 
       let(:sibling_work_package) do
-        wp = create(:work_package, sibling_attributes)
-
-        wp.follows << work_package
-
-        wp
+        create(:work_package, sibling_attributes).tap do |wp|
+          create(:follows_relation, from: wp, to: work_package)
+        end
       end
 
       before do
@@ -1109,8 +1096,6 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
         parent_work_package.reload
         sibling_work_package.reload
       end
-
-      let(:attributes) { { parent: nil } }
 
       it 'removes the parent and reschedules it' do
         expect(subject)
@@ -1234,7 +1219,7 @@ describe WorkPackages::UpdateService, 'integration tests', type: :model, with_ma
     context 'work package does have default status' do
       let(:status) { create :default_status }
       let!(:workflow_type) do
-        create(:workflow, type: new_type, role: role, old_status_id: status.id)
+        create(:workflow, type: new_type, role:, old_status_id: status.id)
       end
 
       it 'does not set the status' do

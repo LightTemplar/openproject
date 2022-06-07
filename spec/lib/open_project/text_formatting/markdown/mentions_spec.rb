@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -36,35 +36,35 @@ describe OpenProject::TextFormatting,
   describe '.format_text' do
     shared_let(:project) { create :valid_project }
     let(:identifier) { project.identifier }
+    let(:options) { { project: } }
+
     shared_let(:role) do
       create :role,
-                        permissions: %i(view_work_packages edit_work_packages
-                                        browse_repository view_changesets view_wiki_pages)
+             permissions: %i(view_work_packages edit_work_packages
+                             browse_repository view_changesets view_wiki_pages)
     end
 
     shared_let(:project_member) do
       create :user,
-                        member_in_project: project,
-                        member_through_role: role
+             member_in_project: project,
+             member_through_role: role
     end
 
     before do
       login_as(project_member)
     end
 
-    let(:options) { { project: project } }
-
     context 'User links' do
       let(:role) do
         create :role,
-                          permissions: %i[view_work_packages edit_work_packages
-                                          browse_repository view_changesets view_wiki_pages]
+               permissions: %i[view_work_packages edit_work_packages
+                               browse_repository view_changesets view_wiki_pages]
       end
 
       let(:linked_project_member) do
         create :user,
-                          member_in_project: project,
-                          member_through_role: role
+               member_in_project: project,
+               member_through_role: role
       end
 
       context 'User link via mention' do
@@ -190,9 +190,9 @@ describe OpenProject::TextFormatting,
           context "with an email address as login name" do
             let(:linked_project_member) do
               create :user,
-                                member_in_project: project,
-                                member_through_role: role,
-                                login: "foo@bar.com"
+                     member_in_project: project,
+                     member_through_role: role,
+                     login: "foo@bar.com"
             end
 
             it_behaves_like 'format_text produces' do
@@ -264,16 +264,16 @@ describe OpenProject::TextFormatting,
           let(:role) { create(:role, permissions: %i(view_work_packages)) }
           let(:current_user) do
             create(:user,
-                              member_in_project: project,
-                              member_through_role: role)
+                   member_in_project: project,
+                   member_through_role: role)
           end
           let(:user) do
             create(:user,
-                              login: 'foo@bar.com',
-                              firstname: 'Foo',
-                              lastname: 'Barrit',
-                              member_in_project: project,
-                              member_through_role: role)
+                   login: 'foo@bar.com',
+                   firstname: 'Foo',
+                   lastname: 'Barrit',
+                   member_in_project: project,
+                   member_through_role: role)
           end
 
           before do
@@ -301,6 +301,7 @@ describe OpenProject::TextFormatting,
 
           context 'with only_path false (default)', with_settings: { host_name: "openproject.org" } do
             let(:options) { { only_path: false } }
+
             it_behaves_like 'format_text produces' do
               let(:raw) do
                 <<~RAW
@@ -324,15 +325,15 @@ describe OpenProject::TextFormatting,
     context 'Group reference' do
       let(:role) do
         create :role,
-                          permissions: []
+               permissions: []
       end
 
       let(:linked_project_member_group) do
         create(:group).tap do |group|
           create(:member,
-                            principal: group,
-                            project: project,
-                            roles: [role])
+                 principal: group,
+                 project:,
+                 roles: [role])
         end
       end
 

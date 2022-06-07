@@ -7,46 +7,46 @@ describe "Notification center sidemenu", type: :feature, js: true do
 
   shared_let(:recipient) do
     create :user,
-                      member_in_projects: [project, project2, project3],
-                      member_with_permissions: %i[view_work_packages]
+           member_in_projects: [project, project2, project3],
+           member_with_permissions: %i[view_work_packages]
   end
   shared_let(:other_user) { create(:user) }
 
-  shared_let(:work_package) { create :work_package, project: project, author: other_user }
+  shared_let(:work_package) { create :work_package, project:, author: other_user }
   shared_let(:work_package2) { create :work_package, project: project2, author: other_user }
   shared_let(:work_package3) { create :work_package, project: project3, author: other_user }
   shared_let(:work_package4) { create :work_package, project: project3, author: other_user }
 
   let(:notification) do
     create :notification,
-                      recipient: recipient,
-                      project: project,
-                      resource: work_package,
-                      reason: :watched
+           recipient:,
+           project:,
+           resource: work_package,
+           reason: :watched
   end
 
   let(:notification2) do
     create :notification,
-                      recipient: recipient,
-                      project: project2,
-                      resource: work_package2,
-                      reason: :assigned
+           recipient:,
+           project: project2,
+           resource: work_package2,
+           reason: :assigned
   end
 
   let(:notification3) do
     create :notification,
-                      recipient: recipient,
-                      project: project3,
-                      resource: work_package3,
-                      reason: :responsible
+           recipient:,
+           project: project3,
+           resource: work_package3,
+           reason: :responsible
   end
 
   let(:notification4) do
     create :notification,
-                      recipient: recipient,
-                      project: project3,
-                      resource: work_package4,
-                      reason: :mentioned
+           recipient:,
+           project: project3,
+           resource: work_package4,
+           reason: :mentioned
   end
 
   let(:notifications) do
@@ -73,7 +73,7 @@ describe "Notification center sidemenu", type: :feature, js: true do
       center.expect_no_toaster
 
       side_menu.expect_item_with_no_count 'Inbox'
-      side_menu.expect_item_with_no_count 'Assigned'
+      side_menu.expect_item_with_no_count 'Assignee'
       side_menu.expect_item_with_no_count '@mentioned'
       side_menu.expect_item_with_no_count 'Accountable'
       side_menu.expect_item_with_no_count 'Watching'
@@ -85,7 +85,7 @@ describe "Notification center sidemenu", type: :feature, js: true do
 
     # Expect standard filters
     side_menu.expect_item_with_count 'Inbox', 4
-    side_menu.expect_item_with_count 'Assigned', 1
+    side_menu.expect_item_with_count 'Assignee', 1
     side_menu.expect_item_with_count '@mentioned', 1
     side_menu.expect_item_with_count 'Accountable', 1
     side_menu.expect_item_with_count 'Watching', 1
@@ -100,7 +100,7 @@ describe "Notification center sidemenu", type: :feature, js: true do
 
     # ...  will change the filter counts
     side_menu.expect_item_with_count 'Inbox', 3
-    side_menu.expect_item_with_count 'Assigned', 1
+    side_menu.expect_item_with_count 'Assignee', 1
     side_menu.expect_item_with_count '@mentioned', 1
     side_menu.expect_item_with_count 'Accountable', 1
     side_menu.expect_item_with_no_count 'Watching'
@@ -120,7 +120,7 @@ describe "Notification center sidemenu", type: :feature, js: true do
     side_menu.finished_loading
     center.mark_all_read
     side_menu.expect_item_with_no_count 'Inbox'
-    side_menu.expect_item_with_no_count 'Assigned'
+    side_menu.expect_item_with_no_count 'Assignee'
     side_menu.expect_item_with_no_count '@mentioned'
     side_menu.expect_item_with_no_count 'Accountable'
     side_menu.expect_item_with_no_count 'Watching'
@@ -141,7 +141,7 @@ describe "Notification center sidemenu", type: :feature, js: true do
     center.expect_no_item notification2, notification3, notification4
 
     # Filter for "Assignee"
-    side_menu.click_item 'Assigned'
+    side_menu.click_item 'Assignee'
     side_menu.finished_loading
     center.expect_work_package_item notification2
     center.expect_no_item notification, notification3, notification4

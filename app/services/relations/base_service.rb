@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -66,7 +64,7 @@ class Relations::BaseService < ::BaseServices::BaseCallable
 
   def reschedule(model)
     schedule_result = WorkPackages::SetScheduleService
-                      .new(user: user, work_package: model.to)
+                      .new(user:, work_package: model.to)
                       .call
 
     # The to-work_package will not be altered by the schedule service so
@@ -81,7 +79,7 @@ class Relations::BaseService < ::BaseServices::BaseCallable
   end
 
   def retry_with_inverse_for_relates(model, errors)
-    if errors.symbols_for(:base).include?(:"typed_dag.circular_dependency") &&
+    if errors.symbols_for(:base).include?(:'typed_dag.circular_dependency') &&
        model.canonical_type == Relation::TYPE_RELATES
       model.from, model.to = model.to, model.from
 

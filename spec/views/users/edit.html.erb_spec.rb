@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -41,7 +41,7 @@ describe 'users/edit', type: :view do
   context 'authentication provider' do
     let(:user) do
       build :user, id: 1, # id is required to create route to edit
-                              identity_url: 'test_provider:veryuniqueid'
+                   identity_url: 'test_provider:veryuniqueid'
     end
 
     before do

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -45,13 +45,13 @@ module OpenProject::Backlogs::Patches::UpdateServicePatch
     def inherit_version_to_descendants(result)
       all_descendants = work_package
                           .descendants
-                          .includes(:parent_relation, project: :enabled_modules)
-                          .order(Arel.sql('relations.hierarchy asc'))
-                          .select('work_packages.*, relations.hierarchy')
+                          .includes(project: :enabled_modules)
+                          .order_by_ancestors('asc')
+                          .select('work_packages.*')
       stop_descendants_ids = []
 
       descendant_tasks = all_descendants.reject do |t|
-        if stop_descendants_ids.include?(t.parent_relation.from_id) || !t.is_task?
+        if stop_descendants_ids.include?(t.parent_id) || !t.is_task?
           stop_descendants_ids << t.id
         end
       end

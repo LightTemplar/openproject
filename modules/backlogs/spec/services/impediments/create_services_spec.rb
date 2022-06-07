@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -29,36 +29,37 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe Impediments::CreateService do
-  let(:instance) { described_class.new(user: user) }
+  let(:instance) { described_class.new(user:) }
+  let(:impediment_subject) { 'Impediment A' }
 
   let(:user) { create(:user) }
-  let(:role) { create(:role, permissions: %i(add_work_packages assign_versions)) }
+  let(:role) { create(:role, permissions: %i(add_work_packages assign_versions work_package_assigned)) }
   let(:type_feature) { create(:type_feature) }
   let(:type_task) { create(:type_task) }
   let(:priority) { create(:priority, is_default: true) }
   let(:feature) do
     build(:work_package,
-                     type: type_feature,
-                     project: project,
-                     author: user,
-                     priority: priority,
-                     status: status1)
+          type: type_feature,
+          project:,
+          author: user,
+          priority:,
+          status: status1)
   end
-  let(:version) { create(:version, project: project) }
+  let(:version) { create(:version, project:) }
 
   let(:project) do
     project = create(:project, types: [type_feature, type_task])
 
     create(:member, principal: user,
-                               project: project,
-                               roles: [role])
+                    project:,
+                    roles: [role])
 
     project
   end
 
   let(:status1) { create(:status, name: 'status 1', is_default: true) }
 
-  before(:each) do
+  before do
     allow(Setting).to receive(:plugin_openproject_backlogs).and_return('points_burn_direction' => 'down',
                                                                        'wiki_template' => '',
                                                                        'card_spec' => 'Sattleford VM-5040',
@@ -67,8 +68,6 @@ describe Impediments::CreateService do
 
     login_as user
   end
-
-  let(:impediment_subject) { 'Impediment A' }
 
   shared_examples_for 'impediment creation' do
     it { expect(subject.subject).to eql impediment_subject }
@@ -82,15 +81,16 @@ describe Impediments::CreateService do
   end
 
   shared_examples_for 'impediment creation with 1 blocking relationship' do
-    it_should_behave_like 'impediment creation'
-    it { expect(subject.relations_to.direct.size).to eq(1) }
-    it { expect(subject.relations_to.direct[0].to).to eql feature }
-    it { expect(subject.relations_to.direct[0].relation_type).to eql Relation::TYPE_BLOCKS }
+    it_behaves_like 'impediment creation'
+
+    it { expect(subject.blocks_relations.size).to eq(1) }
+    it { expect(subject.blocks_relations[0].to).to eql feature }
   end
 
   shared_examples_for 'impediment creation with no blocking relationship' do
-    it_should_behave_like 'impediment creation'
-    it { expect(subject.relations_to.direct.size).to eq(0) }
+    it_behaves_like 'impediment creation'
+
+    it { expect(subject.blocks_relations.size).to eq(0) }
   end
 
   describe 'WITH a blocking relationship to a story' do
@@ -106,14 +106,14 @@ describe Impediments::CreateService do
         call.result
       end
 
-      before(:each) do
+      before do
         feature.version = version
         feature.save
       end
 
-      it_should_behave_like 'impediment creation with 1 blocking relationship'
+      it_behaves_like 'impediment creation with 1 blocking relationship'
       it { expect(subject).not_to be_new_record }
-      it { expect(subject.relations_to.direct[0]).not_to be_new_record }
+      it { expect(subject.blocks_relations[0]).not_to be_new_record }
     end
 
     describe 'WITH the story having another version' do
@@ -128,13 +128,14 @@ describe Impediments::CreateService do
         call.result
       end
 
-      before(:each) do
-        feature.version = create(:version, project: project, name: 'another version')
+      before do
+        feature.version = create(:version, project:, name: 'another version')
         feature.save
       end
 
-      it_should_behave_like 'impediment creation with no blocking relationship'
+      it_behaves_like 'impediment creation with no blocking relationship'
       it { expect(subject).to be_new_record }
+
       it {
         expect(subject.errors[:blocks_ids]).to include I18n.t(:can_only_contain_work_packages_of_current_sprint,
                                                               scope: %i[activerecord errors models work_package attributes
@@ -154,8 +155,9 @@ describe Impediments::CreateService do
         call.result
       end
 
-      it_should_behave_like 'impediment creation with no blocking relationship'
+      it_behaves_like 'impediment creation with no blocking relationship'
       it { expect(subject).to be_new_record }
+
       it {
         expect(subject.errors[:blocks_ids]).to include I18n.t(:can_only_contain_work_packages_of_current_sprint,
                                                               scope: %i[activerecord errors models work_package attributes
@@ -176,8 +178,9 @@ describe Impediments::CreateService do
       call.result
     end
 
-    it_should_behave_like 'impediment creation with no blocking relationship'
+    it_behaves_like 'impediment creation with no blocking relationship'
     it { expect(subject).to be_new_record }
+
     it {
       expect(subject.errors[:blocks_ids]).to include I18n.t(:must_block_at_least_one_work_package,
                                                             scope: %i[activerecord errors models work_package attributes

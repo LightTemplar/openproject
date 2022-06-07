@@ -4,6 +4,12 @@ require "support/pages/work_packages/abstract_work_package"
 describe "multi select custom values", js: true do
   shared_let(:admin) { create :admin }
   let(:current_user) { admin }
+  let(:wp_page) { Pages::FullWorkPackage.new work_package }
+  let(:cf_edit_field) do
+    field = wp_page.edit_field "customField#{custom_field.id}"
+    field.field_type = 'create-autocompleter'
+    field
+  end
 
   shared_let(:type) { create :type }
   shared_let(:project) { create :project, types: [type] }
@@ -19,14 +25,6 @@ describe "multi select custom values", js: true do
     )
   end
 
-  let(:wp_page) { Pages::FullWorkPackage.new work_package }
-
-  let(:cf_edit_field) do
-    field = wp_page.edit_field "customField#{custom_field.id}"
-    field.field_type = 'create-autocompleter'
-    field
-  end
-
   before do
     login_as current_user
     wp_page.visit!
@@ -34,31 +32,31 @@ describe "multi select custom values", js: true do
   end
 
   describe 'with mixed users, group, and placeholdders' do
-    let(:work_package) { create :work_package, project: project, type: type }
+    let(:work_package) { create :work_package, project:, type: }
 
     let!(:user) do
       create :user,
-                        firstname: 'Da Real',
-                        lastname: 'User',
-                        member_in_project: project,
-                        member_through_role: role
+             firstname: 'Da Real',
+             lastname: 'User',
+             member_in_project: project,
+             member_through_role: role
     end
 
     let!(:group) do
       create :group,
-                        name: 'groupfoo',
-                        member_in_project: project,
-                        member_through_role: role
+             name: 'groupfoo',
+             member_in_project: project,
+             member_through_role: role
     end
 
     let!(:placeholder) do
       create :placeholder_user,
-                        name: 'PLACEHOLDER',
-                        member_in_project: project,
-                        member_through_role: role
+             name: 'PLACEHOLDER',
+             member_in_project: project,
+             member_through_role: role
     end
 
-    it "should be shown and allowed to be updated" do
+    it "is shown and allowed to be updated" do
       expect(page).to have_text custom_field.name
 
       cf_edit_field.activate!
@@ -104,27 +102,27 @@ describe "multi select custom values", js: true do
   describe 'with all users' do
     let!(:user1) do
       create :user,
-                        firstname: 'Billy',
-                        lastname: 'Nobbler',
-                        member_in_project: project,
-                        member_through_role: role
+             firstname: 'Billy',
+             lastname: 'Nobbler',
+             member_in_project: project,
+             member_through_role: role
     end
 
     let!(:user2) do
       create :user,
-                        firstname: 'Cooper',
-                        lastname: 'Quatermaine',
-                        member_in_project: project,
-                        member_through_role: role
+             firstname: 'Cooper',
+             lastname: 'Quatermaine',
+             member_in_project: project,
+             member_through_role: role
     end
 
     let!(:user3) do
       create :user,
-                        firstname: 'Anton',
-                        lastname: 'Lupin',
-                        status: User.statuses[:invited],
-                        member_in_project: project,
-                        member_through_role: role
+             firstname: 'Anton',
+             lastname: 'Lupin',
+             status: User.statuses[:invited],
+             member_in_project: project,
+             member_through_role: role
     end
 
     context "with existing custom values" do
@@ -139,7 +137,7 @@ describe "multi select custom values", js: true do
         wp
       end
 
-      it "should be shown and allowed to be updated" do
+      it "is shown and allowed to be updated" do
         expect(page).to have_text custom_field.name
         expect(page).to have_text "Billy Nobbler"
         expect(page).to have_text "Anton Lupin"

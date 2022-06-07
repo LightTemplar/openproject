@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -31,6 +31,7 @@ require_relative './viewpoint_reader_shared_examples'
 
 describe OpenProject::Bim::BcfJson::ViewpointReader do
   let(:instance) { described_class.new xml_viewpoint.uuid, xml_viewpoint.viewpoint }
+
   subject { instance.result }
 
   describe 'with empty example' do

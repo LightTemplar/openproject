@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -141,8 +141,8 @@ describe ::API::V3::WorkPackages::WorkPackageRepresenter do
         end
 
         it 'signalizes the payload' do
-          is_expected
-            .to be_json_eql({ "reference_links": ["/api/v3/work_packages/#{work_package.id}"] }.to_json)
+          expect(subject)
+            .to be_json_eql({ reference_links: ["/api/v3/work_packages/#{work_package.id}"] }.to_json)
             .at_path('_links/convertBCF/payload')
         end
       end

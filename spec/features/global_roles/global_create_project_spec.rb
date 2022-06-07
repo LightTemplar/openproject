@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -56,6 +56,7 @@ describe 'Global role: Global Create project', type: :feature, js: true do
     # And I am already admin
     # When I go to the edit page of the role "Global"
     # Then I should see "Create project"
+
     it 'does show the global permission' do
       visit edit_role_path(role)
       expect(page).to have_no_selector('.form--label-with-check-box', text: 'Edit project')
@@ -70,8 +71,8 @@ describe 'Global role: Global Create project', type: :feature, js: true do
     let(:user) { create :user }
     let!(:global_member) do
       create(:global_member,
-                        principal: user,
-                        roles: [global_role])
+             principal: user,
+             roles: [global_role])
     end
 
     let(:name_field) { ::FormFields::InputFormField.new :name }
@@ -98,6 +99,7 @@ describe 'Global role: Global Create project', type: :feature, js: true do
     # | Lastname | Bobbit |
     #   When I am already logged in as "bob"
     let(:user) { create :user }
+
     it 'does show the global permission' do
       # And I go to the overall projects page
       visit projects_path

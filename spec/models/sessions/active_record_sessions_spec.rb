@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -40,6 +40,7 @@ describe ::Sessions::UserSession do
 
   describe '#update' do
     let(:session) { create :user_session }
+
     subject { described_class.find_by(session_id: session.session_id) }
 
     it 'can not update' do
@@ -62,7 +63,7 @@ describe ::Sessions::UserSession do
 
   describe '.for_user' do
     let(:user) { create :user }
-    let!(:sessions) { create_list :user_session, 2, user: user }
+    let!(:sessions) { create_list :user_session, 2, user: }
 
     subject { described_class.for_user(user) }
 

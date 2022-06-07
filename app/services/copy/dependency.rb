@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -76,7 +74,7 @@ module Copy
 
     def perform(params:)
       begin
-        copy_dependency(params: params)
+        copy_dependency(params:)
       rescue StandardError => e
         Rails.logger.error { "Failed to copy dependency #{self.class.identifier}: #{e.message}" }
         result.success = false

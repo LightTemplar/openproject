@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,19 +37,19 @@ describe 'Select work package row', type: :feature, js: true do
 
   describe 'sorting by version' do
     let(:work_package_1) do
-      create(:work_package, project: project)
+      create(:work_package, project:)
     end
     let(:work_package_2) do
-      create(:work_package, project: project)
+      create(:work_package, project:)
     end
 
     let(:version_1) do
-      create(:version, project: project,
-                                  name: 'aaa_version')
+      create(:version, project:,
+                       name: 'aaa_version')
     end
     let(:version_2) do
-      create(:version, project: project,
-                                  name: 'zzz_version')
+      create(:version, project:,
+                       name: 'zzz_version')
     end
     let(:columns) { ::Components::WorkPackages::Columns.new }
     let(:sort_by) { ::Components::WorkPackages::SortBy.new }
@@ -107,32 +107,32 @@ describe 'Select work package row', type: :feature, js: true do
 
     let(:parent) do
       create :work_package,
-                        project: project
+             project:
     end
     let(:child1) do
       create :work_package,
-                        project: project,
-                        parent: parent
+             project:,
+             parent:
     end
     let(:child2) do
       create :work_package,
-                        project: project,
-                        parent: parent
+             project:,
+             parent:
     end
     let(:grand_child1) do
       create :work_package,
-                        project: project,
-                        parent: child1
+             project:,
+             parent: child1
     end
     let(:grand_child2) do
       create :work_package,
-                        project: project,
-                        parent: child2
+             project:,
+             parent: child2
     end
     let(:grand_child3) do
       create :work_package,
-                        project: project,
-                        parent: child1
+             project:,
+             parent: child1
     end
 
     before do

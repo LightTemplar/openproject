@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -32,17 +32,17 @@ describe 'onboarding tour for new users', js: true do
   let(:user) { create :admin }
   let(:project) do
     create :project, name: 'Demo project', identifier: 'demo-project', public: true,
-                                enabled_module_names: %w[work_package_tracking wiki]
+                     enabled_module_names: %w[work_package_tracking wiki]
   end
   let(:project_link) { "<a href=/projects/#{project.identifier}> #{project.name} </a>" }
 
   let(:scrum_project) do
     create :project, name: 'Scrum project', identifier: 'your-scrum-project', public: true,
-                                enabled_module_names: %w[work_package_tracking]
+                     enabled_module_names: %w[work_package_tracking]
   end
   let(:scrum_project_link) { "<a href=/projects/#{scrum_project.identifier}> #{scrum_project.name} </a>" }
 
-  let!(:wp1) { create(:work_package, project: project) }
+  let!(:wp1) { create(:work_package, project:) }
   let(:next_button) { find('.enjoyhint_next_btn') }
 
   context 'with a new user' do

@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -29,7 +27,7 @@
 #++
 
 class Principals::DeleteJob < ApplicationJob
-  queue_with_priority :low
+  queue_with_priority :below_normal
 
   def perform(principal)
     Principal.transaction do
@@ -75,7 +73,7 @@ class Principals::DeleteJob < ApplicationJob
         remove_cost_query_values(name, options, principal)
       end.compact
 
-      CostQuery.where(id: query.id).update_all(serialized: serialized)
+      CostQuery.where(id: query.id).update_all(serialized:)
     end
   end
 

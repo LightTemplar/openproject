@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,19 +34,19 @@ describe 'model viewer',
          js: true do
   let(:project) { create :project, enabled_module_names: %i[bim work_package_tracking] }
   # TODO: Add empty viewpoint and stub method to load viewpoints once defined
-  let(:work_package) { create(:work_package, project: project) }
+  let(:work_package) { create(:work_package, project:) }
   let(:role) { create(:role, permissions: %i[view_ifc_models manage_ifc_models view_work_packages]) }
 
   let(:user) do
     create :user,
-                      member_in_project: project,
-                      member_through_role: role
+           member_in_project: project,
+           member_through_role: role
   end
 
   let!(:model) do
     create(:ifc_model_minimal_converted,
-                      project: project,
-                      uploader: user)
+           project:,
+           uploader: user)
   end
 
   let(:show_model_page) { Pages::IfcModels::Show.new(project, model.id) }
@@ -106,8 +106,8 @@ describe 'model viewer',
     let(:view_role) { create(:role, permissions: %i[view_ifc_models view_work_packages view_linked_issues]) }
     let(:view_user) do
       create :user,
-                        member_in_project: project,
-                        member_through_role: view_role
+             member_in_project: project,
+             member_through_role: view_role
     end
 
     before do
@@ -128,8 +128,8 @@ describe 'model viewer',
     let(:no_permissions_role) { create(:role, permissions: %i[]) }
     let(:user_without_permissions) do
       create :user,
-                        member_in_project: project,
-                        member_through_role: no_permissions_role
+             member_in_project: project,
+             member_through_role: no_permissions_role
     end
 
     before do

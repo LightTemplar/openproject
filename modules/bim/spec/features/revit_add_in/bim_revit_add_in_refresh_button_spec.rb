@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,17 +34,17 @@ describe 'BIM Revit Add-in navigation spec',
          js: true,
          driver: :chrome_revit_add_in do
   let(:project) { create :project, enabled_module_names: %i[bim work_package_tracking] }
-  let!(:work_package) { create(:work_package, project: project) }
+  let!(:work_package) { create(:work_package, project:) }
   let(:role) do
     create(:role,
-                      permissions: %i[view_ifc_models manage_ifc_models add_work_packages edit_work_packages view_work_packages])
+           permissions: %i[view_ifc_models manage_ifc_models add_work_packages edit_work_packages view_work_packages])
   end
   let(:wp_table) { ::Pages::WorkPackagesTable.new(project) }
 
   let(:user) do
     create :user,
-                      member_in_project: project,
-                      member_through_role: role
+           member_in_project: project,
+           member_through_role: role
   end
 
   let(:model_page) { ::Pages::IfcModels::ShowDefault.new(project) }

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -31,8 +31,8 @@ require 'spec_helper'
 describe UserPreference do
   subject(:preference) do
     build(:user_preference,
-                     user: user,
-                     settings: settings)
+          user:,
+          settings:)
   end
 
   let(:settings) { {} }
@@ -129,13 +129,13 @@ describe UserPreference do
 
       it 'defaults to true' do
         expect(subject.settings[:hide_mail]).to be_nil
-        expect(subject.hide_mail).to eq true
-        expect(subject.hide_mail?).to eq true
+        expect(subject.hide_mail).to be true
+        expect(subject.hide_mail?).to be true
 
         subject.hide_mail = false
-        expect(subject.settings[:hide_mail]).to eq false
-        expect(subject.hide_mail).to eq false
-        expect(subject.hide_mail?).to eq false
+        expect(subject.settings[:hide_mail]).to be false
+        expect(subject.hide_mail).to be false
+        expect(subject.hide_mail?).to be false
       end
     end
   end

@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -63,20 +61,5 @@ module WorkPackage::SchedulingRules
         .map(&:successor_soonest_start)
         .compact
         .max
-  end
-
-  # Returns the time scheduled for this work package.
-  #
-  # Example:
-  #   Start Date: 2/26/09, Finish Date: 3/04/09,  duration => 7
-  #   Start Date: 2/26/09, Finish Date: 2/26/09,  duration => 1
-  #   Start Date: 2/26/09, Finish Date: -      ,  duration => 1
-  #   Start Date: -      , Finish Date: 2/26/09,  duration => 1
-  def duration
-    if start_date && due_date
-      due_date - start_date + 1
-    else
-      1
-    end
   end
 end

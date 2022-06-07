@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -28,20 +28,20 @@
 
 require 'spec_helper'
 
-feature 'members pagination', type: :feature, js: true do
+describe 'members pagination', type: :feature, js: true do
   shared_let(:admin) { create :admin }
   let(:project) do
     create :project,
-                      name: 'Project 1',
-                      identifier: 'project1',
-                      members: project_members
+           name: 'Project 1',
+           identifier: 'project1',
+           members: project_members
   end
-  let(:project_members) {
+  let(:project_members) do
     {
       bob => manager,
       alice => developer
     }
-  }
+  end
 
   let!(:peter) { create :user, firstname: 'Peter', lastname: 'Pan' }
   let(:bob)   { create :user, firstname: 'Bob', lastname: 'Bobbit' }
@@ -70,13 +70,13 @@ feature 'members pagination', type: :feature, js: true do
   end
 
   context 'when removing a member' do
-    let(:project_members) {
+    let(:project_members) do
       {
         bob => manager,
         alice => developer,
         peter => manager
       }
-    }
+    end
 
     it 'paginates' do
       members_page.set_items_per_page! 1

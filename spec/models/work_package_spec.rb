@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -44,7 +44,7 @@ describe WorkPackage, type: :model do
                        type_id: type.id,
                        author_id: user.id,
                        status_id: status.id,
-                       priority: priority,
+                       priority:,
                        subject: 'test_create',
                        description: 'WorkPackage#create',
                        estimated_hours: '1:30' }
@@ -69,7 +69,7 @@ describe WorkPackage, type: :model do
 
       context 'project chosen' do
         it 'has the provided type if one is provided' do
-          expect(WorkPackage.new(project: project, type: type2).type)
+          expect(WorkPackage.new(project:, type: type2).type)
             .to eql type2
         end
       end
@@ -101,7 +101,7 @@ describe WorkPackage, type: :model do
                            type_id: type.id,
                            author_id: user.id,
                            status_id: status.id,
-                           priority: priority,
+                           priority:,
                            subject: 'test_create' }
         end
       end
@@ -130,7 +130,7 @@ describe WorkPackage, type: :model do
 
         subject do
           create(:work_package,
-                            assigned_to: group).assigned_to
+                 assigned_to: group).assigned_to
         end
 
         it { is_expected.to eq(group) }
@@ -142,8 +142,8 @@ describe WorkPackage, type: :model do
     let(:user_2) { create(:user, member_in_project: project) }
     let(:category) do
       create(:category,
-                        project: project,
-                        assigned_to: user_2)
+             project:,
+             assigned_to: user_2)
     end
 
     before do
@@ -160,9 +160,9 @@ describe WorkPackage, type: :model do
     let(:group) { create(:group) }
     let!(:member) do
       create(:member,
-                        principal: group,
-                        project: work_package.project,
-                        roles: [create(:role)])
+             principal: group,
+             project: work_package.project,
+             roles: [create(:role)])
     end
 
     shared_context 'assign group as responsible' do
@@ -180,19 +180,20 @@ describe WorkPackage, type: :model do
 
   describe '#assignable_versions' do
     let(:stub_version2) { build_stubbed(:version) }
+
     def stub_shared_versions(v = nil)
       versions = v ? [v] : []
 
       allow(stub_work_package.project).to receive(:assignable_versions).and_return(versions)
     end
 
-    it "should return all the project's shared versions" do
+    it "returns all the project's shared versions" do
       stub_shared_versions(stub_version)
 
       expect(stub_work_package.assignable_versions).to eq([stub_version])
     end
 
-    it 'should return the former version if the version changed' do
+    it 'returns the former version if the version changed' do
       stub_shared_versions
 
       stub_work_package.version = stub_version2
@@ -204,7 +205,7 @@ describe WorkPackage, type: :model do
       expect(stub_work_package.assignable_versions).to eq([stub_version])
     end
 
-    it 'should return the current version if the version did not change' do
+    it 'returns the current version if the version did not change' do
       stub_shared_versions
 
       stub_work_package.version = stub_version
@@ -218,8 +219,8 @@ describe WorkPackage, type: :model do
   describe '#assignable_versions' do
     let!(:work_package) do
       wp = create(:work_package,
-                             project: project,
-                             version: version_current)
+                  project:,
+                  version: version_current)
       # remove changes to version factored into
       # assignable_versions calculation
       wp.reload
@@ -227,27 +228,27 @@ describe WorkPackage, type: :model do
     end
     let!(:version_current) do
       create(:version,
-                        status: 'closed',
-                        project: project)
+             status: 'closed',
+             project:)
     end
     let!(:version_open) do
       create(:version,
-                        status: 'open',
-                        project: project)
+             status: 'open',
+             project:)
     end
     let!(:version_locked) do
       create(:version,
-                        status: 'locked',
-                        project: project)
+             status: 'locked',
+             project:)
     end
     let!(:version_closed) do
       create(:version,
-                        status: 'closed',
-                        project: project)
+             status: 'closed',
+             project:)
     end
     let!(:version_other_project) do
       create(:version,
-                        status: 'open')
+             status: 'open')
     end
 
     it 'returns all open versions of the project' do
@@ -259,13 +260,13 @@ describe WorkPackage, type: :model do
   describe '#destroy' do
     let(:time_entry_1) do
       create(:time_entry,
-                        project: project,
-                        work_package: work_package)
+             project:,
+             work_package:)
     end
     let(:time_entry_2) do
       create(:time_entry,
-                        project: project,
-                        work_package: work_package)
+             project:,
+             work_package:)
     end
 
     before do
@@ -291,27 +292,27 @@ describe WorkPackage, type: :model do
   describe '#done_ratio' do
     let(:status_new) do
       create(:status,
-                        name: 'New',
-                        is_default: true,
-                        is_closed: false,
-                        default_done_ratio: 50)
+             name: 'New',
+             is_default: true,
+             is_closed: false,
+             default_done_ratio: 50)
     end
     let(:status_assigned) do
       create(:status,
-                        name: 'Assigned',
-                        is_default: true,
-                        is_closed: false,
-                        default_done_ratio: 0)
+             name: 'Assigned',
+             is_default: true,
+             is_closed: false,
+             default_done_ratio: 0)
     end
     let(:work_package_1) do
       create(:work_package,
-                        status: status_new)
+             status: status_new)
     end
     let(:work_package_2) do
       create(:work_package,
-                        project: work_package_1.project,
-                        status: status_assigned,
-                        done_ratio: 30)
+             project: work_package_1.project,
+             status: status_assigned,
+             done_ratio: 30)
     end
 
     before { work_package_2 }
@@ -387,43 +388,43 @@ describe WorkPackage, type: :model do
     let(:project) { create(:project, types: [type, type_2]) }
     let(:version_1) do
       create(:version,
-                        project: project)
+             project:)
     end
     let(:version_2) do
       create(:version,
-                        project: project)
+             project:)
     end
     let(:category_1) do
       create(:category,
-                        project: project)
+             project:)
     end
     let(:category_2) do
       create(:category,
-                        project: project)
+             project:)
     end
     let(:user_2) { create(:user) }
 
     let(:work_package_1) do
       create(:work_package,
-                        author: user,
-                        assigned_to: user,
-                        responsible: user,
-                        project: project,
-                        type: type,
-                        priority: priority,
-                        version: version_1,
-                        category: category_1)
+             author: user,
+             assigned_to: user,
+             responsible: user,
+             project:,
+             type:,
+             priority:,
+             version: version_1,
+             category: category_1)
     end
     let(:work_package_2) do
       create(:work_package,
-                        author: user_2,
-                        assigned_to: user_2,
-                        responsible: user_2,
-                        project: project,
-                        type: type_2,
-                        priority: priority_2,
-                        version: version_2,
-                        category: category_2)
+             author: user_2,
+             assigned_to: user_2,
+             responsible: user_2,
+             project:,
+             type: type_2,
+             priority: priority_2,
+             version: version_2,
+             category: category_2)
     end
 
     before do
@@ -493,16 +494,15 @@ describe WorkPackage, type: :model do
     context 'by project' do
       let(:project_2) do
         create(:project,
-                          parent: project)
+               parent: project)
       end
+      let(:groups) { WorkPackage.by_author(project) }
       let(:work_package_3) do
         create(:work_package,
-                          project: project_2)
+               project: project_2)
       end
 
       before { work_package_3 }
-
-      let(:groups) { WorkPackage.by_author(project) }
 
       it_behaves_like 'group by'
     end
@@ -532,12 +532,12 @@ describe WorkPackage, type: :model do
   describe '#on_active_project' do
     let(:project_archived) do
       create(:project,
-                        active: false)
+             active: false)
     end
     let!(:work_package) { create(:work_package) }
     let(:work_package_in_archived_project) do
       create(:work_package,
-                        project: project_archived)
+             project: project_archived)
     end
 
     subject { WorkPackage.on_active_project.length }
@@ -557,13 +557,13 @@ describe WorkPackage, type: :model do
     let(:user) { create(:user) }
     let(:project_archived) do
       create(:project,
-                        active: false)
+             active: false)
     end
     let!(:work_package) { create(:work_package, author: user) }
     let(:work_package_in_archived_project) do
       create(:work_package,
-                        project: project_archived,
-                        author: user)
+             project: project_archived,
+             author: user)
     end
 
     subject { WorkPackage.with_author(user).length }
@@ -580,21 +580,21 @@ describe WorkPackage, type: :model do
   end
 
   describe '#add_time_entry' do
-    it 'should return a new time entry' do
+    it 'returns a new time entry' do
       expect(stub_work_package.add_time_entry).to be_a TimeEntry
     end
 
-    it 'should already have the project assigned' do
+    it 'alreadies have the project assigned' do
       stub_work_package.project = stub_project
 
       expect(stub_work_package.add_time_entry.project).to eq(stub_project)
     end
 
-    it 'should already have the work_package assigned' do
+    it 'alreadies have the work_package assigned' do
       expect(stub_work_package.add_time_entry.work_package).to eq(stub_work_package)
     end
 
-    it 'should return an usaved entry' do
+    it 'returns an usaved entry' do
       expect(stub_work_package.add_time_entry).to be_new_record
     end
   end
@@ -648,53 +648,19 @@ describe WorkPackage, type: :model do
   end
 
   describe '#duration' do
-    let(:instance) { send(subclass) }
-
-    describe "w/ today as start date
-              w/ tomorrow as finish date" do
-      before do
-        work_package.start_date = Date.today
-        work_package.due_date = Date.today + 1.day
-      end
-
-      it 'should have a duration of two' do
-        expect(work_package.duration).to eq(2)
+    context "when not setting a value" do
+      it 'is nil' do
+        expect(work_package.duration).to be_nil
       end
     end
 
-    describe "w/ today as start date
-              w/ today as finish date" do
+    context "when setting the value" do
       before do
-        work_package.start_date = Date.today
-        work_package.due_date = Date.today
+        work_package.duration = 5
       end
 
-      it 'should have a duration of one' do
-        expect(work_package.duration).to eq(1)
-      end
-    end
-
-    describe "w/ today as start date
-              w/o a finish date" do
-      before do
-        work_package.start_date = Date.today
-        work_package.due_date = nil
-      end
-
-      it 'should have a duration of one' do
-        expect(work_package.duration).to eq(1)
-      end
-    end
-
-    describe "w/o a start date
-              w today as finish date" do
-      before do
-        work_package.start_date = nil
-        work_package.due_date = Date.today
-      end
-
-      it 'should have a duration of one' do
-        expect(work_package.duration).to eq(1)
+      it 'is the value' do
+        expect(work_package.duration).to eq(5)
       end
     end
   end

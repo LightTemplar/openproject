@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -38,16 +36,16 @@ describe Notifications::CreateFromModelService, 'wiki', with_settings: { journal
   include_context 'with CreateFromJournalJob context'
 
   shared_let(:project) { create(:project) }
-  shared_let(:wiki) { create(:wiki, project: project) }
+  shared_let(:wiki) { create(:wiki, project:) }
 
   let(:permissions) { [:view_wiki_pages] }
   let(:send_notifications) { true }
 
   let(:wiki_page) do
     create(:wiki_page,
-                      wiki: wiki,
-                      content: build(:wiki_content,
-                                                author: other_user))
+           wiki:,
+           content: build(:wiki_content,
+                          author: other_user))
   end
   let(:resource) { wiki_page.content }
   let(:journal) { resource.journals.last }

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -37,7 +37,7 @@ describe VersionSetting, type: :model do
 
   describe 'Instance Methods' do
     describe 'WITH display set to left' do
-      before(:each) do
+      before do
         version_setting.display_left!
       end
 
@@ -45,7 +45,7 @@ describe VersionSetting, type: :model do
     end
 
     describe 'WITH display set to right' do
-      before(:each) do
+      before do
         version_setting.display_right!
       end
 
@@ -53,7 +53,7 @@ describe VersionSetting, type: :model do
     end
 
     describe 'WITH display set to none' do
-      before(:each) do
+      before do
         version_setting.display_none!
       end
 

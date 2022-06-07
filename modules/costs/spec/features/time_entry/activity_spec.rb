@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -39,7 +39,7 @@ describe 'Time entry activity', type: :feature do
   it 'supports CRUD' do
     visit enumerations_path
 
-    page.all('.wp-inline-create--add-link[title="New enumeration value"]').first.click
+    page.find('[data-qa-selector="create-enumeration-time-entry-activity"]').click
 
     fill_in 'Name', with: 'A new activity'
     click_on('Create')

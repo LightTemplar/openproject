@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -28,7 +28,7 @@
 
 require 'spec_helper'
 
-describe ::API::V3::Queries::Schemas::BooleanFilterDependencyRepresenter, clear_cache: true do
+describe ::API::V3::Queries::Schemas::BooleanFilterDependencyRepresenter do
   include ::API::V3::Utilities::PathHelper
 
   let(:project) { build_stubbed(:project) }
@@ -43,7 +43,7 @@ describe ::API::V3::Queries::Schemas::BooleanFilterDependencyRepresenter, clear_
   let(:instance) do
     described_class.new(filter,
                         operator,
-                        form_embedded: form_embedded)
+                        form_embedded:)
   end
 
   subject(:generated) { instance.to_json }

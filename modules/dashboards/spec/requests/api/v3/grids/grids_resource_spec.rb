@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -35,26 +35,26 @@ describe 'API v3 Grids resource', type: :request, content_type: :json do
 
   let(:current_user) do
     create(:user,
-                      member_in_project: project,
-                      member_with_permissions: permissions)
+           member_in_project: project,
+           member_with_permissions: permissions)
   end
   let(:permissions) { %i[view_dashboards manage_dashboards] }
   let(:project) { create(:project) }
   let(:grid) do
     create(:dashboard,
-                      project: project,
-                      widgets: widgets)
+           project:,
+           widgets:)
   end
   let(:widgets) do
     [create(:grid_widget,
-                       identifier: 'custom_text',
-                       start_column: 1,
-                       end_column: 3,
-                       start_row: 1,
-                       end_row: 3,
-                       options: {
-                         text: custom_text
-                       })]
+            identifier: 'custom_text',
+            start_column: 1,
+            end_column: 3,
+            start_row: 1,
+            end_row: 3,
+            options: {
+              text: custom_text
+            })]
   end
   let(:custom_text) { "Some text a user wrote" }
 
@@ -107,7 +107,7 @@ describe 'API v3 Grids resource', type: :request, content_type: :json do
       let(:path) { api_v3_paths.grid(grid.id + 1) }
 
       it 'responds with 404 NOT FOUND' do
-        expect(subject.status).to eql 404
+        expect(subject.status).to be 404
       end
     end
   end
@@ -123,10 +123,10 @@ describe 'API v3 Grids resource', type: :request, content_type: :json do
 
     let(:params) do
       {
-        "rowCount": 10,
-        "name": 'foo',
-        "columnCount": 15,
-        "widgets": widget_params
+        rowCount: 10,
+        name: 'foo',
+        columnCount: 15,
+        widgets: widget_params
       }.with_indifferent_access
     end
 
@@ -140,17 +140,17 @@ describe 'API v3 Grids resource', type: :request, content_type: :json do
       let(:widget_params) do
         [
           {
-            "startColumn": 1,
-            "startRow": 1,
-            "endColumn": 3,
-            "endRow": 3,
-            "identifier": "custom_text",
-            "options": {
-              "name": "Name for custom text widget",
-              "text": {
-                "format": "markdown",
-                "raw": "A custom text text",
-                "html": "<p>A custom text text</p>"
+            startColumn: 1,
+            startRow: 1,
+            endColumn: 3,
+            endRow: 3,
+            identifier: "custom_text",
+            options: {
+              name: "Name for custom text widget",
+              text: {
+                format: "markdown",
+                raw: "A custom text text",
+                html: "<p>A custom text text</p>"
               }
             }
           }.with_indifferent_access

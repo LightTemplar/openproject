@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -36,14 +36,14 @@ describe 'API v3 Revisions by work package resource', type: :request do
 
   let(:current_user) do
     create(:user,
-                      member_in_project: project,
-                      member_through_role: role)
+           member_in_project: project,
+           member_through_role: role)
   end
   let(:project) { create(:project, public: false) }
-  let(:role) { create(:role, permissions: permissions) }
+  let(:role) { create(:role, permissions:) }
   let(:permissions) { %i[view_work_packages view_changesets] }
-  let(:repository) { create(:repository_subversion, project: project) }
-  let(:work_package) { create(:work_package, author: current_user, project: project) }
+  let(:repository) { create(:repository_subversion, project:) }
+  let(:work_package) { create(:work_package, author: current_user, project:) }
   let(:revisions) { [] }
 
   subject(:response) { last_response }
@@ -60,7 +60,7 @@ describe 'API v3 Revisions by work package resource', type: :request do
       get get_path
     end
 
-    it 'should respond with 200' do
+    it 'responds with 200' do
       expect(subject.status).to eq(200)
     end
 
@@ -69,9 +69,9 @@ describe 'API v3 Revisions by work package resource', type: :request do
     context 'with existing revisions' do
       let(:revisions) do
         build_list(:changeset,
-                              5,
-                              comments: "This commit references ##{work_package.id}",
-                              repository: repository)
+                   5,
+                   comments: "This commit references ##{work_package.id}",
+                   repository:)
       end
 
       it_behaves_like 'API V3 collection response', 5, 5, 'Revision'
@@ -86,7 +86,7 @@ describe 'API v3 Revisions by work package resource', type: :request do
     context 'user unauthorized to view work package' do
       let(:current_user) { create(:user) }
 
-      it 'should respond with 404' do
+      it 'responds with 404' do
         expect(subject.status).to eq(404)
       end
     end
@@ -96,16 +96,16 @@ describe 'API v3 Revisions by work package resource', type: :request do
       let(:repository) { create(:repository_subversion, project: subproject) }
       let!(:revisions) do
         build_list(:changeset,
-                              2,
-                              comments: "This commit references ##{work_package.id}",
-                              repository: repository)
+                   2,
+                   comments: "This commit references ##{work_package.id}",
+                   repository:)
       end
 
       context 'with permissions in subproject' do
         let(:current_user) do
           create(:user,
-                            member_in_projects: [project, subproject],
-                            member_through_role: role)
+                 member_in_projects: [project, subproject],
+                 member_through_role: role)
         end
 
         it_behaves_like 'API V3 collection response', 2, 2, 'Revision'

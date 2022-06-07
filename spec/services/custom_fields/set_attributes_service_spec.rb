@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -46,9 +46,9 @@ describe CustomFields::SetAttributesService, type: :model do
   let(:cf_valid) { true }
 
   let(:instance) do
-    described_class.new(user: user,
+    described_class.new(user:,
                         model: cf_instance,
-                        contract_class: contract_class,
+                        contract_class:,
                         contract_options: {})
   end
   let(:cf_instance) { ProjectCustomField.new }
@@ -77,7 +77,7 @@ describe CustomFields::SetAttributesService, type: :model do
   end
 
   it 'is a success' do
-    is_expected
+    expect(subject)
       .to be_success
   end
 
@@ -114,7 +114,7 @@ describe CustomFields::SetAttributesService, type: :model do
     end
 
     it 'returns failure' do
-      is_expected
+      expect(subject)
         .not_to be_success
     end
 

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -29,7 +29,7 @@
 require File.expand_path('../../../../spec_helper', __dir__)
 
 describe OpenProject::GithubIntegration::Services::UpsertPullRequest do
-  subject(:upsert) { described_class.new.call(params, work_packages: work_packages) }
+  subject(:upsert) { described_class.new.call(params, work_packages:) }
 
   let(:params) do
     {
@@ -106,8 +106,8 @@ describe OpenProject::GithubIntegration::Services::UpsertPullRequest do
       changed_files_count: 16,
       labels: [],
       repository: 'test_user/repo',
-      github_user: github_user,
-      work_packages: work_packages
+      github_user:,
+      work_packages:
     )
   end
 
@@ -124,15 +124,15 @@ describe OpenProject::GithubIntegration::Services::UpsertPullRequest do
   context 'when a partial github pull request with that html_url already exists' do
     let(:github_pull_request) do
       create(:github_pull_request,
-                        github_id: nil,
-                        changed_files_count: nil,
-                        body: nil,
-                        comments_count: nil,
-                        review_comments_count: nil,
-                        additions_count: nil,
-                        deletions_count: nil,
-                        github_html_url: 'https://github.com/test_user/repo',
-                        state: 'closed')
+             github_id: nil,
+             changed_files_count: nil,
+             body: nil,
+             comments_count: nil,
+             review_comments_count: nil,
+             additions_count: nil,
+             deletions_count: nil,
+             github_html_url: 'https://github.com/test_user/repo',
+             state: 'closed')
     end
 
     it 'updates the github pull request' do
@@ -153,7 +153,7 @@ describe OpenProject::GithubIntegration::Services::UpsertPullRequest do
 
   context 'when a github pull request with that id and work_package exists' do
     let(:github_pull_request) do
-      create(:github_pull_request, github_id: 123, work_packages: work_packages)
+      create(:github_pull_request, github_id: 123, work_packages:)
     end
 
     it 'does not change the associated work packages' do
@@ -164,7 +164,7 @@ describe OpenProject::GithubIntegration::Services::UpsertPullRequest do
   context 'when a github pull request with that id and work_package exists and a new work_package is referenced' do
     let(:github_pull_request) do
       create(:github_pull_request, github_id: 123,
-                                              work_packages: already_known_work_packages)
+                                   work_packages: already_known_work_packages)
     end
     let(:work_packages) { create_list(:work_package, 2) }
     let(:already_known_work_packages) { [work_packages[0]] }
@@ -191,7 +191,7 @@ describe OpenProject::GithubIntegration::Services::UpsertPullRequest do
 
       expect(GithubPullRequest.last).to have_attributes(
         github_id: 123,
-        github_user: github_user,
+        github_user:,
         merged: true,
         merged_by: github_user,
         merged_at: Time.zone.parse('20210410T09:45:03Z')

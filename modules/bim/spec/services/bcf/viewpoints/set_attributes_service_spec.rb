@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -51,9 +49,9 @@ describe Bim::Bcf::Viewpoints::SetAttributesService, type: :model do
   end
   let(:viewpoint_valid) { true }
   let(:instance) do
-    described_class.new(user: user,
+    described_class.new(user:,
                         model: viewpoint,
-                        contract_class: contract_class)
+                        contract_class:)
   end
   let(:call_attributes) { {} }
   let(:viewpoint) do
@@ -115,7 +113,7 @@ describe Bim::Bcf::Viewpoints::SetAttributesService, type: :model do
         subject
 
         expect(viewpoint.attachments.size)
-          .to eql 1
+          .to be 1
 
         expect(viewpoint.attachments.first.file.read)
           .to eql 'Hello World!'
@@ -146,7 +144,7 @@ describe Bim::Bcf::Viewpoints::SetAttributesService, type: :model do
           subject
 
           expect(viewpoint.attachments.size)
-            .to eql 0
+            .to be 0
         end
       end
     end

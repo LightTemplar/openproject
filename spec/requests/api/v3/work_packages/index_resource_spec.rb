@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -36,13 +36,13 @@ describe 'API v3 Work package resource',
 
   let(:work_package) do
     create(:work_package,
-                      project_id: project.id,
-                      description: 'lorem ipsum')
+           project_id: project.id,
+           description: 'lorem ipsum')
   end
   let(:project) do
     create(:project, identifier: 'test_project', public: false)
   end
-  let(:role) { create(:role, permissions: permissions) }
+  let(:role) { create(:role, permissions:) }
   let(:permissions) { %i[view_work_packages edit_work_packages assign_versions] }
 
   current_user do
@@ -62,7 +62,7 @@ describe 'API v3 Work package resource',
     end
 
     it 'succeeds' do
-      expect(subject.status).to eql 200
+      expect(subject.status).to be 200
     end
 
     it 'returns visible work packages' do
@@ -76,19 +76,19 @@ describe 'API v3 Work package resource',
     end
 
     context 'with filtering by typeahead' do
-      let(:path) { api_v3_paths.path_for :work_packages, filters: filters }
+      let(:path) { api_v3_paths.path_for :work_packages, filters: }
       let(:filters) do
         [
           {
-            "typeahead": {
-              "operator": "**",
-              "values": "lorem ipsum"
+            typeahead: {
+              operator: "**",
+              values: "lorem ipsum"
             }
           }
         ]
       end
 
-      let(:lorem_ipsum_work_package) { create(:work_package, project: project, subject: "lorem ipsum") }
+      let(:lorem_ipsum_work_package) { create(:work_package, project:, subject: "lorem ipsum") }
       let(:lorem_project) { create(:project, members: { current_user => role }, name: "lorem other") }
       let(:ipsum_work_package) { create(:work_package, subject: "other ipsum", project: lorem_project) }
       let(:other_lorem_work_package) { create(:work_package, subject: "lorem", project: lorem_project) }
@@ -105,7 +105,7 @@ describe 'API v3 Work package resource',
       let(:non_member_permissions) { [:view_work_packages] }
 
       it 'succeeds' do
-        expect(subject.status).to eql 200
+        expect(subject.status).to be 200
       end
 
       it 'returns no work packages' do
@@ -134,18 +134,18 @@ describe 'API v3 Work package resource',
       let(:path) { "#{api_v3_paths.work_packages}?#{props}" }
       let(:other_visible_work_package) do
         create(:work_package,
-                          project: project)
+               project:)
       end
       let(:another_visible_work_package) do
         create(:work_package,
-                          project: project)
+               project:)
       end
 
       let(:work_packages) { [work_package, other_work_package, other_visible_work_package, another_visible_work_package] }
 
       it 'succeeds' do
         expect(subject.status)
-          .to eql 200
+          .to be 200
       end
 
       it 'returns visible and filtered work packages' do
@@ -210,10 +210,11 @@ describe 'API v3 Work package resource',
       context 'non hash' do
         let(:props) do
           eprops = [{
-                      filters: [{ id: { operator: '=', values: [work_package.id.to_s, other_visible_work_package.id.to_s] } }].to_json,
-                      sortBy: [%w(id asc)].to_json,
-                      pageSize: 1
-                    }].to_json
+            filters: [{ id: { operator: '=',
+                              values: [work_package.id.to_s, other_visible_work_package.id.to_s] } }].to_json,
+            sortBy: [%w(id asc)].to_json,
+            pageSize: 1
+          }].to_json
 
           {
             eprops: Base64.encode64(Zlib::Deflate.deflate(eprops))

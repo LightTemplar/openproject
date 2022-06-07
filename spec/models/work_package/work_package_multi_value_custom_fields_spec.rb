@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -70,11 +70,11 @@ describe WorkPackage, type: :model do
   end
 
   context 'when value not present' do
-    let(:work_package) { create :work_package, project: project, type: type }
+    let(:work_package) { create :work_package, project:, type: }
 
     it 'returns nil properly' do
-      expect(values).to eq(nil)
-      expect(typed_values).to eq(nil)
+      expect(values).to be_nil
+      expect(typed_values).to be_nil
     end
   end
 

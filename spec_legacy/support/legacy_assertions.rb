@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -84,8 +82,11 @@ module LegacyAssertionsAndHelpers
     file
   end
 
-  def with_settings(options, &_block)
-    saved_settings = options.keys.inject({}) { |h, k| h[k] = Setting[k].dup; h }
+  def with_legacy_settings(options, &)
+    saved_settings = options.keys.inject({}) do |h, k|
+      h[k] = Setting[k].dup
+      h
+    end
     options.each { |k, v| Setting[k] = v }
     yield
   ensure

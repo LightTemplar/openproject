@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,7 +32,7 @@ describe Journals::CompletedJob, type: :model do
   let(:send_mail) { true }
 
   let(:journal) do
-    build_stubbed(:journal, journable: journable).tap do |j|
+    build_stubbed(:journal, journable:).tap do |j|
       allow(Journal)
         .to receive(:find)
               .with(j.id.to_s)
@@ -108,8 +106,8 @@ describe Journals::CompletedJob, type: :model do
         expect(OpenProject::Notifications)
           .to have_received(:send)
                 .with(event,
-                      journal: journal,
-                      send_mail: send_mail)
+                      journal:,
+                      send_mail:)
       end
     end
 

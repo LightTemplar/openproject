@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -39,6 +39,10 @@ describe MailHandler, type: :model do
     # there is a default work package priority to save any work packages
     priority_low
     anno_user
+
+    allow(UserMailer)
+      .to receive(:incoming_email_error)
+      .and_return instance_double(ActionMailer::MessageDelivery, deliver_later: nil)
   end
 
   after do
@@ -47,14 +51,14 @@ describe MailHandler, type: :model do
   end
 
   shared_context 'wp_on_given_project' do
-    let(:permissions) { %i[add_work_packages assign_versions] }
+    let(:permissions) { %i[add_work_packages assign_versions work_package_assigned] }
     let!(:user) do
       create(:user,
-                        mail: 'JSmith@somenet.foo',
-                        firstname: 'John',
-                        lastname: 'Smith',
-                        member_in_project: project,
-                        member_with_permissions: permissions)
+             mail: 'JSmith@somenet.foo',
+             firstname: 'John',
+             lastname: 'Smith',
+             member_in_project: project,
+             member_with_permissions: permissions)
     end
     let(:submit_options) { {} }
 
@@ -67,11 +71,11 @@ describe MailHandler, type: :model do
     let(:permissions) { %i[add_work_packages assign_versions] }
     let!(:user) do
       create(:user,
-                        mail: 'JSmith@somenet.foo',
-                        firstname: 'John',
-                        lastname: 'Smith',
-                        member_in_project: project,
-                        member_with_permissions: permissions)
+             mail: 'JSmith@somenet.foo',
+             firstname: 'John',
+             lastname: 'Smith',
+             member_in_project: project,
+             member_with_permissions: permissions)
     end
     let(:submit_options) { { allow_override: 'version' } }
 
@@ -84,15 +88,15 @@ describe MailHandler, type: :model do
     let(:permissions) { %i[edit_work_packages view_work_packages] }
     let!(:user) do
       create(:user,
-                        mail: 'JSmith@somenet.foo',
-                        member_in_project: project,
-                        member_with_permissions: permissions)
+             mail: 'JSmith@somenet.foo',
+             member_in_project: project,
+             member_with_permissions: permissions)
     end
 
     let!(:work_package) do
       create(:work_package,
-                        id: 2,
-                        project: project).tap do |wp|
+             id: 2,
+             project:).tap do |wp|
         wp.journals.last.update_column(:id, 891223)
       end
     end
@@ -106,19 +110,19 @@ describe MailHandler, type: :model do
     let(:permissions) { %i[add_work_packages view_work_packages add_work_package_watchers] }
     let!(:user) do
       create(:user,
-                        mail: 'JSmith@somenet.foo',
-                        firstname: 'John',
-                        lastname: 'Smith',
-                        member_in_project: project,
-                        member_with_permissions: permissions)
+             mail: 'JSmith@somenet.foo',
+             firstname: 'John',
+             lastname: 'Smith',
+             member_in_project: project,
+             member_with_permissions: permissions)
     end
     let!(:cc_user) do
       create(:user,
-                        mail: 'dlopper@somenet.foo',
-                        firstname: 'D',
-                        lastname: 'Lopper',
-                        member_in_project: project,
-                        member_with_permissions: permissions)
+             mail: 'dlopper@somenet.foo',
+             firstname: 'D',
+             lastname: 'Lopper',
+             member_in_project: project,
+             member_with_permissions: permissions)
     end
     let(:submit_options) { { issue: { project: project.identifier } } }
 
@@ -131,16 +135,16 @@ describe MailHandler, type: :model do
     let(:permissions) { %i[add_work_package_notes view_work_packages] }
     let!(:user) do
       create(:user,
-                        mail: 'j.doe@openproject.org',
-                        member_in_project: project,
-                        member_with_permissions: permissions)
+             mail: 'j.doe@openproject.org',
+             member_in_project: project,
+             member_with_permissions: permissions)
     end
 
     let!(:work_package) do
       create(:work_package,
-                        subject: 'Some subject of the bug',
-                        id: 39733,
-                        project: project).tap do |wp|
+             subject: 'Some subject of the bug',
+             id: 39733,
+             project:).tap do |wp|
         wp.journals.last.update_column(:id, 99999999)
       end
     end
@@ -151,23 +155,23 @@ describe MailHandler, type: :model do
   end
 
   shared_context 'with a reply to a wp mention with attributes' do
-    let(:permissions) { %i[add_work_package_notes view_work_packages edit_work_packages] }
+    let(:permissions) { %i[add_work_package_notes view_work_packages edit_work_packages work_package_assigned] }
     let(:role) do
-      create(:role, permissions: permissions)
+      create(:role, permissions:)
     end
     let!(:user) do
       create(:user,
-                        mail: 'j.doe@openproject.org',
-                        member_in_project: project,
-                        member_through_role: role)
+             mail: 'j.doe@openproject.org',
+             member_in_project: project,
+             member_through_role: role)
     end
 
     let!(:work_package) do
       create(:work_package,
-                        subject: 'Some subject of the bug',
-                        id: 39733,
-                        project: project,
-                        status: original_status).tap do |wp|
+             subject: 'Some subject of the bug',
+             id: 39733,
+             project:,
+             status: original_status).tap do |wp|
         wp.journals.last.update_column(:id, 99999999)
       end
     end
@@ -176,23 +180,23 @@ describe MailHandler, type: :model do
     end
     let!(:resolved_status) do
       create(:status,
-                        name: 'Resolved').tap do |status|
+             name: 'Resolved').tap do |status|
         create(:workflow,
-                          old_status: original_status,
-                          new_status: status,
-                          role: role,
-                          type: work_package.type)
+               old_status: original_status,
+               new_status: status,
+               role:,
+               type: work_package.type)
       end
     end
     let!(:other_user) do
       create(:user,
-                        mail: 'jsmith@somenet.foo',
-                        member_in_project: project,
-                        member_through_role: role)
+             mail: 'jsmith@somenet.foo',
+             member_in_project: project,
+             member_through_role: role)
     end
     let!(:float_cf) do
       create(:float_wp_custom_field,
-                        name: 'float field').tap do |cf|
+             name: 'float field').tap do |cf|
         project.work_package_custom_fields << cf
         work_package.type.custom_fields << cf
       end
@@ -207,15 +211,15 @@ describe MailHandler, type: :model do
     let(:permissions) { %i[view_messages add_messages] }
     let!(:user) do
       create(:user,
-                        mail: 'j.doe@openproject.org',
-                        member_in_project: project,
-                        member_with_permissions: permissions)
+             mail: 'j.doe@openproject.org',
+             member_in_project: project,
+             member_with_permissions: permissions)
     end
 
     let!(:message) do
       create(:message,
-                        id: 70917,
-                        forum: create(:forum, project: project)).tap do |wp|
+             id: 70917,
+             forum: create(:forum, project:)).tap do |wp|
         wp.journals.last.update_column(:id, 99999999)
       end
     end
@@ -249,7 +253,7 @@ describe MailHandler, type: :model do
     context 'when sending a mail not as a reply' do
       context 'in a given project' do
         let!(:status) { create(:status, name: 'Resolved') }
-        let!(:version) { create(:version, name: 'alpha', project: project) }
+        let!(:version) { create(:version, name: 'alpha', project:) }
 
         include_context 'wp_on_given_project' do
           let(:submit_options) { { allow_override: 'version' } }
@@ -309,12 +313,12 @@ describe MailHandler, type: :model do
 
         it 'sets the estimated_hours' do
           expect(subject.estimated_hours)
-            .to eql(2.5)
+            .to be(2.5)
         end
 
         it 'sets the done_ratio' do
           expect(subject.done_ratio)
-            .to eql(30)
+            .to be(30)
         end
 
         it 'removes keywords' do
@@ -337,6 +341,12 @@ describe MailHandler, type: :model do
               subject
             end
           end.to change(Notification.where(recipient: user), :count).by(1)
+        end
+
+        it 'does not send an error reply email' do
+          subject # send mail
+
+          expect(UserMailer).not_to have_received(:incoming_email_error)
         end
       end
 
@@ -387,28 +397,74 @@ describe MailHandler, type: :model do
           end.to change(User, :count).by(1)
         end
 
-        it 'rejects if unknown_user=accept and permission check is present' do
-          expected =
+        context 'with unknown_user=default' do
+          let(:results) { [] }
+
+          before do
+            results << submit_email(
+              'ticket_by_unknown_user.eml',
+              issue: { project: project.identifier },
+              unknown_user: nil
+            )
+          end
+
+          it "ignores the email" do
+            expect(results).to eq [false]
+          end
+
+          it "does not respond with an error email" do
+            expect(UserMailer).not_to have_received(:incoming_email_error)
+          end
+        end
+
+        context 'with unknown_user=accept and permision check present' do
+          let(:expected) do
             'MailHandler: work_package could not be created by Anonymous due to ' \
             '#["may not be accessed.", ' \
             '"Type was attempted to be written but is not writable.", ' \
             '"Project was attempted to be written but is not writable.", ' \
             '"Subject was attempted to be written but is not writable.", ' \
             '"Description was attempted to be written but is not writable."]'
+          end
 
-          allow(Rails.logger)
-            .to receive(:error)
-            .with(expected)
+          let(:results) { [] }
 
-          result = submit_email 'ticket_by_unknown_user.eml',
-                                issue: { project: project.identifier },
-                                unknown_user: 'accept'
+          before do
+            allow(Rails.logger).to receive(:error).with(expected)
 
-          expect(result).to eq false
+            results << submit_email(
+              'ticket_by_unknown_user.eml',
+              issue: { project: project.identifier },
+              unknown_user: 'accept'
+            )
+          end
 
-          expect(Rails.logger)
-            .to have_received(:error)
-                  .with(expected)
+          it 'rejects the email' do
+            expect(results).to eq [false]
+          end
+
+          it 'logs the error' do
+            expect(Rails.logger).to have_received(:error).with(expected)
+          end
+
+          context 'with report_incoming_email_errors true (default)' do
+            it 'responds with an error email' do
+              expect(UserMailer).to have_received(:incoming_email_error) do |user, mail, logs|
+                expect(user).to eq anno_user
+                expect(mail.subject).to eq "Ticket by unknown user"
+                expect(logs).to eq [expected.sub(/^MailHandler/, "error")]
+              end
+            end
+          end
+
+          context(
+            'with report_incoming_email_errors false',
+            with_settings: { report_incoming_email_errors: false }
+          ) do
+            it 'does not respond with an error email' do
+              expect(UserMailer).not_to have_received(:incoming_email_error)
+            end
+          end
         end
 
         it 'accepts if unknown_user=accept and no_permission_check' do
@@ -446,6 +502,12 @@ describe MailHandler, type: :model do
           expect { subject }
             .not_to(change { WorkPackage.count })
         end
+
+        it 'does not result in an error email response' do
+          subject # send email
+
+          expect(UserMailer).not_to have_received(:incoming_email_error)
+        end
       end
 
       context 'wp with status' do
@@ -465,7 +527,7 @@ describe MailHandler, type: :model do
       context 'wp with status case insensitive' do
         let!(:status) { create(:status, name: 'Resolved') }
         let!(:priority_low) { create(:priority_low, name: 'Low', is_default: true) }
-        let!(:version) { create(:version, name: 'alpha', project: project) }
+        let!(:version) { create(:version, name: 'alpha', project:) }
 
         # This email contains: 'Project: onlinestore' and 'Status: resolved'
         include_context 'wp_on_given_project_case_insensitive'
@@ -493,7 +555,7 @@ describe MailHandler, type: :model do
 
     context 'when sending a reply to work package mail' do
       let!(:mail_user) { create :admin, mail: 'user@example.org' }
-      let!(:work_package) { create :work_package, project: project }
+      let!(:work_package) { create :work_package, project: }
 
       before do
         # Avoid trying to extract text
@@ -540,9 +602,9 @@ describe MailHandler, type: :model do
 
         it 'sends notifications' do
           assignee = create(:user,
-                                       member_in_project: project,
-                                       member_with_permissions: %i(view_work_packages),
-                                       notification_settings: [build(:notification_setting, involved: true)])
+                            member_in_project: project,
+                            member_with_permissions: %i(view_work_packages),
+                            notification_settings: [build(:notification_setting, involved: true)])
 
           work_package.update_column(:assigned_to_id, assignee.id)
 
@@ -603,6 +665,7 @@ describe MailHandler, type: :model do
               "status_id" => [original_status.id, resolved_status.id],
               "assigned_to_id" => [nil, other_user.id],
               "start_date" => [nil, Date.parse("Fri, 01 Jan 2010")],
+              "duration" => [1, 365],
               "custom_fields_#{float_cf.id}" => [nil, "52.6"]
             )
         end
@@ -616,7 +679,7 @@ describe MailHandler, type: :model do
       end
 
       context 'with a custom field' do
-        let(:work_package) { create :work_package, project: project }
+        let(:work_package) { create :work_package, project: }
         let(:type) { create :type }
 
         before do
@@ -767,9 +830,9 @@ describe MailHandler, type: :model do
     end
 
     describe 'category' do
-      let!(:category) { create :category, project: project, name: 'Foobar' }
+      let!(:category) { create :category, project:, name: 'Foobar' }
 
-      it 'should add a work_package with category' do
+      it 'adds a work_package with category' do
         allow(Setting).to receive(:default_language).and_return('en')
         Role.non_member.update_attribute :permissions, [:add_work_packages]
         project.update_attribute :public, true
@@ -787,7 +850,7 @@ describe MailHandler, type: :model do
   describe '#cleanup_body' do
     let(:input) do
       "Subject:foo\nDescription:bar\n" \
-      ">>> myserver.example.org 2016-01-27 15:56 >>>\n... (Email-Body) ..."
+        ">>> myserver.example.org 2016-01-27 15:56 >>>\n... (Email-Body) ..."
     end
     let(:handler) { MailHandler.send :new }
 

@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -41,14 +41,14 @@ describe 'BCF 2.1 comments resource', type: :request, content_type: :json, with_
 
   let(:view_only_user) do
     create(:user,
-                      member_in_project: project,
-                      member_with_permissions: %i[view_linked_issues view_work_packages])
+           member_in_project: project,
+           member_with_permissions: %i[view_linked_issues view_work_packages])
   end
 
   let(:edit_user) do
     create(:user,
-                      member_in_project: project,
-                      member_with_permissions: %i[view_linked_issues view_work_packages manage_bcf])
+           member_in_project: project,
+           member_with_permissions: %i[view_linked_issues view_work_packages manage_bcf])
   end
 
   let(:user_without_permission) { create(:user, member_in_project: project) }
@@ -56,16 +56,16 @@ describe 'BCF 2.1 comments resource', type: :request, content_type: :json, with_
   let(:assignee) { create(:user) }
 
   let(:work_package) do
-    create(:work_package, assigned_to: assignee, due_date: Time.zone.today, project: project)
+    create(:work_package, assigned_to: assignee, due_date: Time.zone.today, project:)
   end
 
-  let(:bcf_issue) { create(:bcf_issue_with_viewpoint, work_package: work_package) }
+  let(:bcf_issue) { create(:bcf_issue_with_viewpoint, work_package:) }
   let(:viewpoint) { bcf_issue.viewpoints.first }
 
   let(:bcf_comment) { create(:bcf_comment, issue: bcf_issue, author: view_only_user) }
   let(:bcf_answer) { create(:bcf_comment, issue: bcf_issue, reply_to: bcf_comment, author: assignee) }
   let(:bcf_comment_to_viewpoint) do
-    create(:bcf_comment, issue: bcf_issue, viewpoint: viewpoint, author: edit_user)
+    create(:bcf_comment, issue: bcf_issue, viewpoint:, author: edit_user)
   end
 
   subject(:response) { last_response }
@@ -563,10 +563,10 @@ describe 'BCF 2.1 comments resource', type: :request, content_type: :json, with_
     context 'if the updated comment contains viewpoint reference and is a reply, but update does not set those attributes' do
       let(:updated_comment) do
         create(:bcf_comment,
-                          issue: bcf_issue,
-                          viewpoint: viewpoint,
-                          reply_to: bcf_comment,
-                          author: edit_user)
+               issue: bcf_issue,
+               viewpoint:,
+               reply_to: bcf_comment,
+               author: edit_user)
       end
 
       let(:params) { { comment: "Only change the comment text and leave the reply and viewpoint guid empty." } }

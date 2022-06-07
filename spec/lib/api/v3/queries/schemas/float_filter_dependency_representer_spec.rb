@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -28,14 +28,14 @@
 
 require 'spec_helper'
 
-describe ::API::V3::Queries::Schemas::FloatFilterDependencyRepresenter, clear_cache: true do
+describe ::API::V3::Queries::Schemas::FloatFilterDependencyRepresenter do
   include ::API::V3::Utilities::PathHelper
 
   let(:project) { build_stubbed(:project) }
-  let(:query) { build_stubbed(:query, project: project) }
+  let(:query) { build_stubbed(:query, project:) }
   let(:custom_field) { build_stubbed(:float_wp_custom_field) }
   let(:filter) do
-    Queries::WorkPackages::Filter::CustomFieldFilter.from_custom_field! custom_field: custom_field,
+    Queries::WorkPackages::Filter::CustomFieldFilter.from_custom_field! custom_field:,
                                                                         context: query
   end
   let(:form_embedded) { false }
@@ -43,7 +43,7 @@ describe ::API::V3::Queries::Schemas::FloatFilterDependencyRepresenter, clear_ca
   let(:instance) do
     described_class.new(filter,
                         operator,
-                        form_embedded: form_embedded)
+                        form_embedded:)
   end
 
   subject(:generated) { instance.to_json }

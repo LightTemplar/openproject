@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -58,10 +58,10 @@ describe TabsHelper, type: :helper do
         .and_return [given_tab]
 
       user = build(:user, id: 2)
-      @tabs = render_extensible_tabs(:user, user: user)
+      @tabs = render_extensible_tabs(:user, user:)
     end
 
-    it "should return an evaluated path" do
+    it "returns an evaluated path" do
       expect(response.status).to eq 200
       expect(@tabs).to eq([expected_tab])
     end

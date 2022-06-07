@@ -1,8 +1,8 @@
 shared_context 'principal membership management context' do
   shared_let(:project) do
     create :project,
-                      name: 'Project 1',
-                      identifier: 'project1'
+           name: 'Project 1',
+           identifier: 'project1'
   end
   shared_let(:project2) { create :project, name: 'Project 2', identifier: 'project2' }
 
@@ -11,7 +11,7 @@ shared_context 'principal membership management context' do
 end
 
 shared_examples 'principal membership management flows' do
-  scenario 'handles role modification flow' do
+  it 'handles role modification flow' do
     principal_page.visit!
     principal_page.open_projects_tab!
 
@@ -52,18 +52,18 @@ shared_examples 'global user principal membership management flows' do |permissi
 
     context 'when the user is member in the projects' do
       it_behaves_like 'principal membership management flows' do
-      before do
-        Members::CreateService
-          .new(user: User.system, contract_class: EmptyContract)
-          .call(principal: global_user,
-                project: project,
-                roles: [manager])
+        before do
+          Members::CreateService
+            .new(user: User.system, contract_class: EmptyContract)
+            .call(principal: global_user,
+                  project:,
+                  roles: [manager])
 
-        Members::CreateService
-          .new(user: User.system, contract_class: EmptyContract)
-          .call(principal: global_user,
-                project: project2,
-                roles: [manager])
+          Members::CreateService
+            .new(user: User.system, contract_class: EmptyContract)
+            .call(principal: global_user,
+                  project: project2,
+                  roles: [manager])
         end
       end
     end
@@ -80,8 +80,8 @@ shared_examples 'global user principal membership management flows' do |permissi
       it 'does not show the membership' do
         Members::CreateService
           .new(user: User.system, contract_class: EmptyContract)
-          .call(principal: principal,
-                project: project,
+          .call(principal:,
+                project:,
                 roles: [developer])
 
         principal_page.visit!
@@ -98,9 +98,9 @@ shared_examples 'global user principal membership management flows' do |permissi
   context 'as user with global and project permissions, but not manage_members' do
     current_user do
       create :user,
-                        global_permission: permission,
-                        member_in_project: project,
-                        member_with_permissions: %i[view_work_packages]
+             global_permission: permission,
+             member_in_project: project,
+             member_with_permissions: %i[view_work_packages]
     end
 
     it 'does not allow to select that project' do

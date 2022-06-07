@@ -4,32 +4,33 @@ require 'features/page_objects/notification'
 describe 'edit work package', js: true do
   let(:dev_role) do
     create :role,
-                      permissions: %i[view_work_packages
-                                      add_work_packages]
+           permissions: %i[view_work_packages
+                           add_work_packages]
   end
   let(:dev) do
     create :user,
-                      firstname: 'Dev',
-                      lastname: 'Guy',
-                      member_in_project: project,
-                      member_through_role: dev_role
+           firstname: 'Dev',
+           lastname: 'Guy',
+           member_in_project: project,
+           member_through_role: dev_role
   end
   let(:manager_role) do
     create :role,
-                      permissions: %i[view_work_packages
-                                      edit_work_packages]
+           permissions: %i[view_work_packages
+                           edit_work_packages
+                           work_package_assigned]
   end
   let(:manager) do
     create :admin,
-                      firstname: 'Manager',
-                      lastname: 'Guy',
-                      member_in_project: project,
-                      member_through_role: manager_role
+           firstname: 'Manager',
+           lastname: 'Guy',
+           member_in_project: project,
+           member_through_role: manager_role
   end
   let(:placeholder_user) do
     create :placeholder_user,
-                      member_in_project: project,
-                      member_through_role: manager_role
+           member_in_project: project,
+           member_through_role: manager_role
   end
 
   let(:cf_all) do
@@ -49,13 +50,13 @@ describe 'edit work package', js: true do
   let(:project) { create(:project, types: [type, type2]) }
   let(:work_package) do
     work_package = create(:work_package,
-                                     author: dev,
-                                     project: project,
-                                     type: type,
-                                     created_at: 5.days.ago.to_date.to_s(:db))
+                          author: dev,
+                          project:,
+                          type:,
+                          created_at: 5.days.ago.to_date.to_fs(:db))
 
     note_journal = work_package.journals.last
-    note_journal.update_column(:created_at, 5.days.ago.to_date.to_s(:db))
+    note_journal.update_column(:created_at, 5.days.ago.to_date.to_fs(:db))
 
     work_package
   end
@@ -67,13 +68,13 @@ describe 'edit work package', js: true do
   let(:status2) { create :status }
   let(:workflow) do
     create :workflow,
-                      type_id: type2.id,
-                      old_status: work_package.status,
-                      new_status: status2,
-                      role: manager_role
+           type_id: type2.id,
+           old_status: work_package.status,
+           new_status: status2,
+           role: manager_role
   end
-  let(:version) { create :version, project: project }
-  let(:category) { create :category, project: project }
+  let(:version) { create :version, project: }
+  let(:category) { create :category, project: }
 
   let(:visit_before) { true }
 
@@ -98,7 +99,7 @@ describe 'edit work package', js: true do
 
   context 'as an admin without roles' do
     let(:visit_before) { false }
-    let(:work_package) { create(:work_package, project: project, type: type2) }
+    let(:work_package) { create(:work_package, project:, type: type2) }
     let(:admin) { create :admin }
 
     it 'can still use the manager role' do
@@ -211,7 +212,7 @@ describe 'edit work package', js: true do
       type_field.set_value type2.name
 
       wp_page.expect_toast message: "#{custom_field.name} can't be blank.",
-                                  type: 'error'
+                           type: 'error'
 
       cf_field = wp_page.edit_field("customField#{custom_field.id}")
       cf_field.expect_active!
@@ -254,11 +255,12 @@ describe 'edit work package', js: true do
     field.update(too_long, expect_failure: true)
 
     wp_page.expect_toast message: 'Subject is too long (maximum is 255 characters)',
-                                type: 'error'
+                         type: 'error'
   end
 
   context 'submitting' do
     let(:subject_field) { wp_page.edit_field(:subject) }
+
     before do
       subject_field.activate!
       subject_field.set_value 'My new subject!'

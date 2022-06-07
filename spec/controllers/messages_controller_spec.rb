@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,13 +34,13 @@ describe MessagesController, type: :controller, with_settings: { journal_aggrega
   let(:role) { create(:role) }
   let!(:member) do
     create(:member,
-                      project: project,
-                      principal: user,
-                      roles: [role])
+           project:,
+           principal: user,
+           roles: [role])
   end
   let!(:forum) do
     create(:forum,
-                      project: project)
+           project:)
   end
 
   let(:filename) { 'testfile.txt' }
@@ -52,7 +52,7 @@ describe MessagesController, type: :controller, with_settings: { journal_aggrega
     context 'public project' do
       let(:user) { User.anonymous }
       let(:project) { create(:public_project) }
-      let!(:message) { create :message, forum: forum }
+      let!(:message) { create :message, forum: }
 
       it 'renders the show template' do
         get :show, params: { project_id: project.id, id: message.id }
@@ -67,8 +67,8 @@ describe MessagesController, type: :controller, with_settings: { journal_aggrega
   end
 
   describe '#update' do
-    let(:message) { create :message, forum: forum }
-    let(:other_forum) { create :forum, project: project }
+    let(:message) { create :message, forum: }
+    let(:other_forum) { create :forum, project: }
 
     before do
       role.add_permission!(:edit_messages) and user.reload
@@ -120,15 +120,15 @@ describe MessagesController, type: :controller, with_settings: { journal_aggrega
     describe '#remove' do
       let!(:attachment) do
         create(:attachment,
-                          container: message,
-                          author: user,
-                          filename: filename)
+               container: message,
+               author: user,
+               filename:)
       end
       let!(:attachable_journal) do
         create(:journal_attachable_journal,
-                          journal: message.journals.last,
-                          attachment: attachment,
-                          filename: filename)
+               journal: message.journals.last,
+               attachment:,
+               filename:)
       end
 
       before do
@@ -156,7 +156,7 @@ describe MessagesController, type: :controller, with_settings: { journal_aggrega
   end
 
   describe 'quote' do
-    let(:message) { create :message, content: 'foo', subject: 'subject', forum: forum }
+    let(:message) { create :message, content: 'foo', subject: 'subject', forum: }
 
     context 'when allowed' do
       let(:user) { create(:admin) }

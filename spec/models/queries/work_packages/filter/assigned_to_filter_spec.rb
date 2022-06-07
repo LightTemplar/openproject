@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -50,7 +50,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
       let(:values) { [assignee.id.to_s] }
 
       it 'returns the work package' do
-        is_expected
+        expect(subject)
           .to match_array [work_package]
       end
     end
@@ -65,7 +65,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
       end
 
       it 'returns the work package' do
-        is_expected
+        expect(subject)
           .to match_array [work_package]
       end
 
@@ -88,7 +88,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
       end
 
       it 'does not return the work package' do
-        is_expected
+        expect(subject)
           .to be_empty
       end
     end
@@ -123,7 +123,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
       let(:values) { [group.id.to_s] }
 
       it 'returns the work package' do
-        is_expected
+        expect(subject)
           .to match_array [work_package]
       end
     end
@@ -133,7 +133,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
       let(:group) { create(:group, members: assignee) }
 
       it 'does not return the work package' do
-        is_expected
+        expect(subject)
           .to be_empty
       end
     end
@@ -142,7 +142,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
       let(:values) { [group.id.to_s] }
 
       it 'does not return the work package' do
-        is_expected
+        expect(subject)
           .to be_empty
       end
     end
@@ -154,7 +154,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
       let(:group) { create(:group, members: user) }
 
       it 'does not return the work package' do
-        is_expected
+        expect(subject)
           .to be_empty
       end
     end
@@ -165,7 +165,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
       let(:user) { create(:user) }
 
       it 'does not return the work package' do
-        is_expected
+        expect(subject)
           .to be_empty
       end
     end
@@ -174,7 +174,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
       let(:values) { ['0'] }
 
       it 'does not return the work package' do
-        is_expected
+        expect(subject)
           .to be_empty
       end
     end
@@ -189,7 +189,7 @@ describe Queries::WorkPackages::Filter::AssignedToFilter, type: :model do
     let(:placeholder_user) { build_stubbed(:group) }
 
     let(:principal_loader) do
-      double('principal_loader', principal_values: principal_values)
+      double('principal_loader', principal_values:)
     end
     let(:principal_values) { [] }
 

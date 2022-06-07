@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -131,7 +129,7 @@ class SearchController < ApplicationController
       r, c = klass.search(tokens,
                           projects_to_search,
                           limit: (LIMIT + 1),
-                          offset: offset,
+                          offset:,
                           before: search_params[:previous].nil?)
 
       results += r
@@ -171,7 +169,7 @@ class SearchController < ApplicationController
               scope
             end
 
-    scope.map { |s| [s, scope_class(s)] }.to_h
+    scope.index_with { |s| scope_class(s) }
   end
 
   def scope_class(scope)

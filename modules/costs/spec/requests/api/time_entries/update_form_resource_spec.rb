@@ -1,5 +1,3 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
 # Copyright (C) 2012-2020 the OpenProject GmbH
@@ -45,11 +43,11 @@ describe ::API::V3::TimeEntries::UpdateFormAPI, content_type: :json do
   let(:custom_field) { create(:time_entry_custom_field) }
   let(:user) do
     create(:user,
-                      member_in_project: project,
-                      member_with_permissions: permissions)
+           member_in_project: project,
+           member_with_permissions: permissions)
   end
   let(:work_package) do
-    create(:work_package, project: project)
+    create(:work_package, project:)
   end
   let(:other_user) { create(:user) }
   let(:permissions) { %i[view_time_entries edit_time_entries view_work_packages] }
@@ -92,7 +90,7 @@ describe ::API::V3::TimeEntries::UpdateFormAPI, content_type: :json do
           },
           spentOn: Date.today.to_s,
           hours: 'PT5H',
-          "comment": {
+          comment: {
             raw: "some comment"
           },
           "customField#{custom_field.id}": {
@@ -200,9 +198,9 @@ describe ::API::V3::TimeEntries::UpdateFormAPI, content_type: :json do
           user = time_entry.user
 
           create(:member,
-                            project: time_entry.project,
-                            roles: [create(:role, permissions: permissions)],
-                            principal: user)
+                 project: time_entry.project,
+                 roles: [create(:role, permissions:)],
+                 principal: user)
 
           user
         end

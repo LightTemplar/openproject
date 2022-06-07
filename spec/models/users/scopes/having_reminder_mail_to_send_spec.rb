@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -655,7 +653,7 @@ describe User, '.having_reminder_mail_to_send', type: :model do
   end
 
   context 'when the provided scope_time is after the current time' do
-    let(:scope_time) { Time.current + 1.minute }
+    let(:scope_time) { 1.minute.from_now }
 
     it 'raises an error' do
       expect { scope }

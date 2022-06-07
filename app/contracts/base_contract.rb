@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -69,7 +67,7 @@ class BaseContract < Disposable::Twin
       attribute_aliases[db] = outside
     end
 
-    def property(name, options = {}, &block)
+    def property(name, options = {}, &)
       if (twin = options.delete(:form))
         options[:twin] = twin
       end
@@ -137,9 +135,7 @@ class BaseContract < Disposable::Twin
   end
 
   def writable_attributes
-    @writable_attributes ||= begin
-      reduce_writable_attributes(collect_writable_attributes)
-    end
+    @writable_attributes ||= reduce_writable_attributes(collect_writable_attributes)
   end
 
   def writable?(attribute)

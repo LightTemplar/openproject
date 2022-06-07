@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -46,9 +46,9 @@ def become_member_with_permissions(permissions)
   let(:current_user) { create(:user) }
 
   before do
-    role = create(:role, permissions: permissions)
+    role = create(:role, permissions:)
 
-    member = build(:member, user: current_user, project: project)
+    member = build(:member, user: current_user, project:)
     member.roles = [role]
     member.save!
   end
@@ -73,7 +73,7 @@ def build_work_package_hierarchy(data, *attributes, parent: nil, shared_attribut
 
       work_packages << parent_wp
       work_packages += build_work_package_hierarchy(
-        attr.values.first, *attributes, parent: parent_wp, shared_attributes: shared_attributes
+        attr.values.first, *attributes, parent: parent_wp, shared_attributes:
       )
     else
       wp = create :work_package, shared_attributes.merge(**attributes.zip(attr).to_h)

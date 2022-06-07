@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -35,23 +35,27 @@ describe 'MeetingMinutes', type: :model do
 
   # meeting minutes are editable when the meeting agenda is locked
   describe '#editable?' do
-    before(:each) do
+    before do
       @mee = build :meeting
       @min.meeting = @mee
     end
+
     describe 'with no agenda present' do
       it 'is not editable' do
         expect(@min.editable?).to be_falsey
       end
     end
+
     describe 'with an agenda present' do
-      before(:each) do
+      before do
         @a = build :meeting_agenda
         @mee.agenda = @a
       end
+
       it 'is not editable when the agenda is open' do
         expect(@min.editable?).to be_falsey
       end
+
       it 'is editable when the agenda is closed' do
         @a.lock!
         expect(@min.editable?).to be_truthy

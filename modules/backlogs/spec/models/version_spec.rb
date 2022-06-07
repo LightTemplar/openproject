@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,9 +34,9 @@ describe Version, type: :model do
   describe 'rebuild positions' do
     def build_work_package(options = {})
       build(:work_package, options.reverse_merge(version_id: version.id,
-                                                            priority_id: priority.id,
-                                                            project_id: project.id,
-                                                            status_id: status.id))
+                                                 priority_id: priority.id,
+                                                 project_id: project.id,
+                                                 status_id: status.id))
     end
 
     def create_work_package(options = {})
@@ -59,7 +59,7 @@ describe Version, type: :model do
     def move_to_project(work_package, project)
       WorkPackages::UpdateService
         .new(model: work_package, user: admin)
-        .call(project: project)
+        .call(project:)
     end
 
     before do
@@ -94,9 +94,9 @@ describe Version, type: :model do
 
       work_package1 = create(:work_package, type_id: task_type.id, status_id: status.id, project_id: project.id)
       work_package2 = create(:work_package, parent_id: work_package1.id, type_id: task_type.id, status_id: status.id,
-                                                       project_id: project.id)
+                                            project_id: project.id)
       work_package3 = create(:work_package, parent_id: work_package2.id, type_id: task_type.id, status_id: status.id,
-                                                       project_id: project.id)
+                                            project_id: project.id)
 
       work_package1.reload
       work_package1.version_id = version.id

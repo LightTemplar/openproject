@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -43,19 +43,19 @@ describe ::OpenProject::Bim::BcfXml::Exporter do
 
   context "one WP without BCF issue associated" do
     it '#work_packages' do
-      expect(subject.work_packages.count).to eql(0)
+      expect(subject.work_packages.count).to be(0)
     end
   end
 
   context "one WP with BCF issue associated" do
-    let(:bcf_issue) { create(:bcf_issue_with_comment, work_package: work_package) }
+    let(:bcf_issue) { create(:bcf_issue_with_comment, work_package:) }
 
     before do
       bcf_issue
     end
 
     it '#work_packages' do
-      expect(subject.work_packages.count).to eql(1)
+      expect(subject.work_packages.count).to be(1)
     end
   end
 end

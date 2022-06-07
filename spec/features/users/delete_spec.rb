@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -28,7 +28,7 @@
 
 require 'spec_helper'
 
-describe 'user deletion: ', type: :feature, js: true do
+describe 'user deletion:', type: :feature, js: true do
   let(:dialog) { ::Components::PasswordConfirmationDialog.new }
 
   before do
@@ -39,8 +39,8 @@ describe 'user deletion: ', type: :feature, js: true do
     let(:user_password) { 'bob!' * 4 }
     let(:current_user) do
       create(:user,
-                        password: user_password,
-                        password_confirmation: user_password)
+             password: user_password,
+             password_confirmation: user_password)
     end
 
     it 'can delete their own account', js: true do
@@ -53,7 +53,7 @@ describe 'user deletion: ', type: :feature, js: true do
       dialog.confirm_flow_with user_password
 
       expect(page).to have_content 'Account successfully deleted'
-      expect(current_path).to eq '/login'
+      expect(page).to have_current_path '/login'
     end
 
     it 'cannot delete their own account if the settings forbid it' do
@@ -61,7 +61,7 @@ describe 'user deletion: ', type: :feature, js: true do
       visit my_account_path
 
       within '#main-menu' do
-        expect(page).to_not have_content 'Delete account'
+        expect(page).not_to have_content 'Delete account'
       end
     end
   end
@@ -75,7 +75,7 @@ describe 'user deletion: ', type: :feature, js: true do
       visit edit_user_path(user)
 
       expect(page).to have_content "#{user.firstname} #{user.lastname}"
-      expect(page).to_not have_content 'Delete account'
+      expect(page).not_to have_content 'Delete account'
 
       visit deletion_info_user_path(user)
       expect(page).to have_text 'Error 404'
@@ -87,8 +87,8 @@ describe 'user deletion: ', type: :feature, js: true do
     let(:user_password) { 'admin! * 4' }
     let(:current_user) do
       create(:admin,
-                        password: user_password,
-                        password_confirmation: user_password)
+             password: user_password,
+             password_confirmation: user_password)
     end
 
     it 'can delete other users if the setting permitts it', selenium: true do
@@ -112,14 +112,14 @@ describe 'user deletion: ', type: :feature, js: true do
       dialog.confirm_flow_with user_password, should_fail: false
 
       expect(page).to have_content 'Account successfully deleted'
-      expect(current_path).to eq '/users'
+      expect(page).to have_current_path '/users'
     end
 
     it 'cannot delete other users if the settings forbid it' do
       Setting.users_deletable_by_admins = 0
       visit edit_user_path(user)
 
-      expect(page).to_not have_content 'Delete account'
+      expect(page).not_to have_content 'Delete account'
     end
 
     it 'can change the deletablilty settings' do
@@ -133,8 +133,8 @@ describe 'user deletion: ', type: :feature, js: true do
 
       click_on 'Save'
 
-      expect(Setting.users_deletable_by_admins?).to eq true
-      expect(Setting.users_deletable_by_self?).to eq true
+      expect(Setting.users_deletable_by_admins?).to be true
+      expect(Setting.users_deletable_by_self?).to be true
     end
   end
 end

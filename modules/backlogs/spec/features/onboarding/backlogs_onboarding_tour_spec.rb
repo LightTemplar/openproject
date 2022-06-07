@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -33,29 +33,29 @@ describe 'backlogs onboarding tour', js: true do
   let(:user) { create :admin }
   let(:demo_project) do
     create :project,
-                      name: 'Demo project',
-                      identifier: 'demo-project',
-                      public: true,
-                      enabled_module_names: %w[work_package_tracking wiki]
+           name: 'Demo project',
+           identifier: 'demo-project',
+           public: true,
+           enabled_module_names: %w[work_package_tracking wiki]
   end
   let(:project) do
     create :project,
-                      name: 'Scrum project',
-                      identifier: 'your-scrum-project',
-                      public: true,
-                      enabled_module_names: %w[work_package_tracking wiki backlogs]
+           name: 'Scrum project',
+           identifier: 'your-scrum-project',
+           public: true,
+           enabled_module_names: %w[work_package_tracking wiki backlogs]
   end
-  let(:sprint) { create(:version, project: project, name: 'Sprint 1') }
+  let(:sprint) { create(:version, project:, name: 'Sprint 1') }
   let(:status) { create(:default_status) }
   let(:priority) { create(:default_priority) }
 
   let(:impediment) do
     build(:impediment, author: user,
-                     version: sprint,
-                     assigned_to: user,
-                     project: project,
-                     type: type_task,
-                     status: status)
+                       version: sprint,
+                       assigned_to: user,
+                       project:,
+                       type: type_task,
+                       status:)
   end
 
   let(:story_type) { create(:type_feature) }
@@ -68,13 +68,13 @@ describe 'backlogs onboarding tour', js: true do
 
   let!(:existing_story) do
     create(:work_package,
-                      type: story_type,
-                      project: project,
-                      status: status,
-                      priority: priority,
-                      position: 1,
-                      story_points: 3,
-                      version: sprint)
+           type: story_type,
+           project:,
+           status:,
+           priority:,
+           position: 1,
+           story_points: 3,
+           version: sprint)
   end
 
   before do

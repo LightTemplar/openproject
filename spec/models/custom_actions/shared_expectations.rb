@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -172,7 +172,7 @@ shared_examples_for 'associated custom action validations' do
     end
 
     it 'adds an error on actions if there are more values than one (depending on multi_value?)' do
-      instance.values = allowed_values.map { |a| a[:value] }
+      instance.values = allowed_values.pluck(:value)
 
       instance.validate(errors)
 

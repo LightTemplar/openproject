@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -32,29 +32,29 @@ describe 'Work Package table cost entries', type: :feature, js: true do
   let(:project) { create :project }
   let(:user) { create :admin }
 
-  let(:parent) { create :work_package, project: project }
-  let(:work_package) { create :work_package, project: project, parent: parent }
-  let(:hourly_rate) { create :default_hourly_rate, user: user, rate: 1.00 }
+  let(:parent) { create :work_package, project: }
+  let(:work_package) { create :work_package, project:, parent: }
+  let(:hourly_rate) { create :default_hourly_rate, user:, rate: 1.00 }
 
   let!(:time_entry1) do
     create :time_entry,
-                      user: user,
-                      work_package: parent,
-                      project: project,
-                      hours: 10
+           user:,
+           work_package: parent,
+           project:,
+           hours: 10
   end
 
   let!(:time_entry2) do
     create :time_entry,
-                      user: user,
-                      work_package: work_package,
-                      project: project,
-                      hours: 2.50
+           user:,
+           work_package:,
+           project:,
+           hours: 2.50
   end
 
   let(:wp_table) { ::Pages::WorkPackagesTable.new(project) }
   let!(:query) do
-    query              = build(:query, user: user, project: project)
+    query              = build(:query, user:, project:)
     query.column_names = %w(id subject spent_hours)
 
     query.save!

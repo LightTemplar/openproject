@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -34,44 +34,57 @@ describe Queries::Scopes::Visible, type: :model do
 
     let(:user) do
       create(:user,
-                        member_in_project: project,
-                        member_with_permissions: permissions)
+             member_in_project: project,
+             member_with_permissions: permissions)
     end
     let(:permissions) { %i[view_work_packages] }
     let!(:private_user_query) do
       create(:query,
-                        project: project,
-                        user: user)
+             name: 'Private user query',
+             project:,
+             user:)
     end
     let!(:private_other_user_query) do
       create(:query,
-                        project: project)
+             name: 'Private other user query',
+             project:)
     end
     let!(:private_user_query_lacking_permissions) do
       create(:query,
-                        project: create(:project,
-                                                   members: { user => create(:role, permissions: []) }),
-                        user: user)
+             name: 'Private user query lacking permission',
+             project: create(:project,
+                             members: { user => create(:role, permissions: []) }),
+             user:)
     end
     let!(:public_query) do
       create(:query,
-                        project: project,
-                        public: true)
+             name: 'Public query',
+             project:,
+             public: true)
     end
     let!(:public_query_lacking_permissions) do
       create(:query,
-                        project: create(:project,
-                                                   members: { user => create(:role, permissions: []) }),
-                        public: true)
+             name: 'Public query lacking permission',
+             project: create(:project,
+                             members: { user => create(:role, permissions: []) }),
+             public: true)
     end
     let!(:global_user_query) do
       create(:query,
-                        project: nil,
-                        user: user)
+             name: 'Global user query',
+             project: nil,
+             user:)
     end
     let!(:global_other_user_query) do
       create(:query,
-                        project: nil)
+             name: 'Global other user query',
+             project: nil)
+    end
+    let!(:global_other_user_public_query) do
+      create(:query,
+             name: 'Global other user public query',
+             project: nil,
+             public: true)
     end
     let(:project) { create(:project) }
     let(:public_project) { create(:public_project) }
@@ -79,7 +92,7 @@ describe Queries::Scopes::Visible, type: :model do
     context 'with the user having the :view_work_packages permission' do
       it 'returns the queries that are public or that are the user`s' do
         expect(scope)
-          .to match_array([private_user_query, public_query, global_user_query, global_other_user_query])
+          .to match_array([private_user_query, public_query, global_user_query, global_other_user_public_query])
       end
     end
 

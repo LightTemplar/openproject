@@ -1,8 +1,6 @@
-#-- encoding: UTF-8
-
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -41,26 +39,26 @@ describe IssuePriority, type: :model do
   end
 
   describe '#objects_count' do
-    let(:work_package1) { create(:work_package, priority: priority) }
+    let(:work_package1) { create(:work_package, priority:) }
     let(:work_package2) { create(:work_package) }
 
     it 'counts the work packages having the priority' do
       expect(priority.objects_count)
-        .to eql 0
+        .to be 0
 
       work_package1
       work_package2
 
       # will not count the other work package
       expect(priority.objects_count)
-        .to eql 1
+        .to be 1
     end
   end
 
   describe '#option_name' do
     it 'is a symbol' do
       expect(stubbed_priority.option_name)
-        .to eql :enumeration_work_package_priorities
+        .to be :enumeration_work_package_priorities
     end
   end
 
@@ -77,7 +75,7 @@ describe IssuePriority, type: :model do
 
   describe '#transer_to' do
     let(:new_priority) { create(:priority) }
-    let(:work_package1) { create(:work_package, priority: priority) }
+    let(:work_package1) { create(:work_package, priority:) }
     let(:work_package2) { create(:work_package) }
     let(:work_package3) { create(:work_package, priority: new_priority) }
 

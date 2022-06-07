@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -36,10 +36,10 @@ describe 'API v3 posts resource', type: :request do
   let(:current_user) do
     create(:user, member_in_project: project, member_through_role: role)
   end
-  let(:forum) { create(:forum, project: project) }
-  let(:message) { create(:message, forum: forum) }
+  let(:forum) { create(:forum, project:) }
+  let(:message) { create(:message, forum:) }
   let(:project) { create(:project) }
-  let(:role) { create(:role, permissions: permissions) }
+  let(:role) { create(:role, permissions:) }
   let(:permissions) { %i(view_messages) }
 
   subject(:response) { last_response }
@@ -57,7 +57,7 @@ describe 'API v3 posts resource', type: :request do
 
     it 'returns 200 OK' do
       expect(subject.status)
-        .to eql(200)
+        .to be(200)
     end
 
     it 'returns the message page' do
@@ -75,7 +75,7 @@ describe 'API v3 posts resource', type: :request do
 
       it 'returns 404 NOT FOUND' do
         expect(subject.status)
-          .to eql(404)
+          .to be(404)
       end
     end
   end

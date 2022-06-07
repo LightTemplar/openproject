@@ -1,6 +1,6 @@
 #-- copyright
 # OpenProject is an open source project management software.
-# Copyright (C) 2012-2021 the OpenProject GmbH
+# Copyright (C) 2012-2022 the OpenProject GmbH
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3.
@@ -30,16 +30,15 @@ require 'spec_helper'
 require_relative './shared_contract_examples'
 require 'contracts/shared/model_contract_shared_context'
 
-
 describe Members::UpdateContract do
   include_context 'ModelContract shared context'
 
   it_behaves_like 'member contract' do
     let(:member) do
       build_stubbed(:member,
-                               project: member_project,
-                               roles: member_roles,
-                               principal: member_principal)
+                    project: member_project,
+                    roles: member_roles,
+                    principal: member_principal)
     end
 
     let(:contract) { described_class.new(member, current_user) }

@@ -1,6 +1,6 @@
 // -- copyright
 // OpenProject is an open source project management software.
-// Copyright (C) 2012-2021 the OpenProject GmbH
+// Copyright (C) 2012-2022 the OpenProject GmbH
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License version 3.
@@ -27,13 +27,13 @@
 //++
 
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
   Injector,
   Input,
   Output,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { HalResourceService } from 'core-app/features/hal/services/hal-resource.service';
 import { PathHelperService } from 'core-app/core/path-helper/path-helper.service';
@@ -45,6 +45,7 @@ import { HalResourceNotificationService } from 'core-app/features/hal/services/h
 import { HalResource } from 'core-app/features/hal/resources/hal-resource';
 import { ApiV3FilterBuilder } from 'core-app/shared/helpers/api-v3/api-v3-filter-builder';
 import { ApiV3Service } from 'core-app/core/apiv3/api-v3.service';
+import { WorkPackageViewFiltersService } from 'core-app/features/work-packages/routing/wp-view-base/view-services/wp-view-filters.service';
 
 @Component({
   templateUrl: './add-assignee.component.html',
@@ -67,15 +68,17 @@ export class AddAssigneeComponent {
     readonly apiV3Service:ApiV3Service,
     readonly injector:Injector,
     readonly currentProjectService:CurrentProjectService,
+    readonly wpTableFilters:WorkPackageViewFiltersService,
   ) { }
 
   public autocomplete(term:string|null):Observable<HalResource[]> {
     const filters = new ApiV3FilterBuilder();
 
-    filters.add('member', '=', [this.currentProjectService.id || '']);
+    const currentProjectId = this.currentProjectService.id;
+    filters.add('member', '=', [currentProjectId] as string[]);
 
     if (term) {
-      filters.add('name_and_identifier', '~', [term]);
+      filters.add('typeahead', '**', [term]);
     }
 
     return this
